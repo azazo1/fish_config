@@ -1,0 +1,36 @@
+if status is-interactive
+    # Commands to run in interactive sessions can go here
+    alias update "source ~/.config/fish/config.fish"
+    alias config "vim ~/.config/fish/config.fish"
+    alias mp "multipass"
+    alias activate "source ./.venv/bin/activate"
+    alias rg '/usr/bin/rg -g "!x.html"'
+    alias rghtml '/usr/bin/rg -g "*.html"'
+    alias mountd "sudo mount -r UUID='00460A96460A8C9A' /mnt/d"
+    alias mountc "sudo mount -r UUID='978E7B4F0DDA02C8' /mnt/c"
+    alias umountd "sudo umount /mnt/d"
+    alias umountc "sudo umount /mnt/c"
+    alias dockert 'docker run --rm -it'
+
+    # --- apps ---
+
+    # starship {
+    starship init fish | source
+    # }
+
+    # zoxide {
+    zoxide init fish | source
+    alias cd "z"
+    # }
+
+end
+
+# --- apps ---
+
+# rust {
+source "$HOME/.cargo/env"
+# }
+
+# uv
+source "$HOME/.local/bin/env"
+# end uv
