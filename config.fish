@@ -13,6 +13,7 @@ if status is-interactive
     alias umountc "sudo umount /mnt/c"
     alias dockert 'docker run -v tmpapp:/app --rm -it'
     alias ll 'ls -lha'
+    alais lzd 'lazydocker'
     fish_hybrid_key_bindings
     # Delete every ctrl-m ctrl-p ctrl-n key bindings.
     bind -e --preset -M insert ctrl-p ctrl-n
