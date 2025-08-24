@@ -27,6 +27,19 @@ if status is-interactive
     end
 
     fish_hybrid_key_bindings
+    # Delete every ctrl-m ctrl-p ctrl-n key bindings.
+    bind -e --preset -M insert ctrl-p ctrl-n
+    bind -e --preset -M visual ctrl-p ctrl-n
+    bind -e --preset ctrl-l
+    bind -e --preset -M visual ctrl-l
+    bind -e --preset -M insert ctrl-l
+
+    bind --user -M insert ctrl-p up-or-search
+    bind --user -M visual ctrl-p up-or-search
+    bind --user -M insert ctrl-n down-or-search
+    bind --user -M visual ctrl-n down-or-search
+    bind --user -s -M insert alt-l accept-autosuggestion
+
 end
 set -gx HOMEBREW_BREW_GIT_REMOTE "https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git"
 test ! -e "$HOME/.x-cmd.root/local/data/fish/rc.fish" || source "$HOME/.x-cmd.root/local/data/fish/rc.fish" # boot up x-cmd.
