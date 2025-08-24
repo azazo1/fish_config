@@ -40,7 +40,16 @@ if status is-interactive
     bind --user -M insert ctrl-n down-or-search
     bind --user -M visual ctrl-n down-or-search
     bind --user -s -M insert alt-l accept-autosuggestion
-
+    
+    function y
+        set tmp (mktemp -t "yazi-cwd.XXXXXX")
+        /opt/homebrew/bin/yazi $argv --cwd-file="$tmp"
+        if read -z cwd < "$tmp"; and [ -n "$cwd" ]; and [ "$cwd" != "$PWD" ]
+            z -- "$cwd"
+        end
+        rm -f -- "$tmp"
+    end
+    alias yazi 'y'
 end
 set -gx HOMEBREW_BREW_GIT_REMOTE "https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git"
 test ! -e "$HOME/.x-cmd.root/local/data/fish/rc.fish" || source "$HOME/.x-cmd.root/local/data/fish/rc.fish" # boot up x-cmd.
