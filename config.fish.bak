@@ -1,0 +1,15 @@
+if status is-interactive
+    # Commands to run in interactive sessions can go here
+    alias ll 'ls -al'
+    alias update '. ~/.config/fish/config.fish'
+    alias config 'vim ~/.config/fish/config.fish'
+    function setproxy
+        set -gx HTTPS_PROXY 'localhost:7890'
+        set -gx HTTP_PROXY 'localhost:7890'
+    end
+    function unsetproxy
+        set -e HTTPS_PROXY
+        set -e HTTP_PROXY
+    end
+end
+set -gx HOMEBREW_BREW_GIT_REMOTE "https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git"
