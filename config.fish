@@ -2,7 +2,7 @@ set -gx PATH "$HOME/.local/bin:$PATH"
 set -gx PATH "$HOME/scripts:$PATH"
 if status is-interactive
     # Commands to run in interactive sessions can go here
-    alias ll 'ls -al'
+    alias ll 'ls -alh'
     alias update '. ~/.config/fish/config.fish'
     alias config 'nvim ~/.config/fish/config.fish'
     alias mynote 'code ~/pjs/mynote'
