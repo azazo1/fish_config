@@ -11,6 +11,7 @@ if status is-interactive
     alias configkitty 'nvim ~/.config/kitty/kitty.conf'
     alias lg 'lazygit'
     alias dockert 'docker run --rm -it'
+    alias activate '. ./.venv/bin/activate'
 
     starship init fish | source
     zoxide init fish | source
