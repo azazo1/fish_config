@@ -39,7 +39,7 @@ if status is-interactive
     bind --user -M visual ctrl-p up-or-search
     bind --user -M insert ctrl-n down-or-search
     bind --user -M visual ctrl-n down-or-search
-    bind --user -s -M insert alt-l accept-autosuggestion
+    bind --user -s -M insert super-l accept-autosuggestion
     
     function y
         set tmp (mktemp -t "yazi-cwd.XXXXXX")
