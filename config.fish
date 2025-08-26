@@ -40,7 +40,8 @@ if status is-interactive
     bind --user -M insert ctrl-n down-or-search
     bind --user -M visual ctrl-n down-or-search
     bind --user -s -M insert super-l accept-autosuggestion
-    
+    bind --user -s -M insert ctrl-j accept-autosuggestion
+
     function y
         set tmp (mktemp -t "yazi-cwd.XXXXXX")
         /opt/homebrew/bin/yazi $argv --cwd-file="$tmp"
