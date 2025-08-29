@@ -12,8 +12,8 @@ if status is-interactive
     alias lg 'lazygit'
     alias dockert 'docker run --rm -it'
     alias activate '. ./.venv/bin/activate'
-    alias rg "$(which rg) -S -g '!*.html'"
-    alias rghtml "$(which rg) -S"
+    alias rg "command rg -S --max-columns 1000"
+    alias rgl "command rg -S"
 
     starship init fish | source
     zoxide init fish | source
