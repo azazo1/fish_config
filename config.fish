@@ -20,12 +20,15 @@ if status is-interactive
     function setproxy
         set -gx HTTPS_PROXY 'localhost:7890'
         set -gx HTTP_PROXY 'localhost:7890'
+        echo "Proxy on localhost:7890 set"
     end
 
     function unsetproxy
         set -e HTTPS_PROXY
         set -e HTTP_PROXY
+        echo "Proxy unset"
     end
+    set -gx NO_PROXY ".tsinghua.edu.cn,.acodev.top,.wakatime.com,$NO_PROXY"
 
     fish_hybrid_key_bindings
     # Delete every ctrl-m ctrl-p ctrl-n key bindings.
@@ -51,6 +54,9 @@ if status is-interactive
         rm -f -- "$tmp"
     end
     alias yazi 'y'
+
+    # 直接启用代理
+    setproxy
 end
 
 set -gx HOMEBREW_BREW_GIT_REMOTE "https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git"
@@ -59,6 +65,8 @@ set -gx HOMEBREW_CORE_GIT_REMOTE "https://mirrors.tuna.tsinghua.edu.cn/git/homeb
 test ! -e "$HOME/.x-cmd.root/local/data/fish/rc.fish" || source "$HOME/.x-cmd.root/local/data/fish/rc.fish" # boot up x-cmd.
 set -gx UV_DEFAULT_INDEX 'https://pypi.tuna.tsinghua.edu.cn/simple'
 
-# bun
+# bun {{{
 set --export BUN_INSTALL "$HOME/.bun"
 set --export PATH $BUN_INSTALL/bin $PATH
+# }}}
+
