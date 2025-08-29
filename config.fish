@@ -2,6 +2,9 @@ set -gx PATH "$HOME/.local/bin:$PATH"
 set -gx PATH "$HOME/scripts:$PATH"
 if status is-interactive
     # Commands to run in interactive sessions can go here
+    starship init fish | source
+    zoxide init fish | source
+
     alias ll 'ls -alh'
     alias update '. ~/.config/fish/config.fish'
     alias config 'nvim ~/.config/fish/config.fish'
@@ -14,9 +17,6 @@ if status is-interactive
     alias activate '. ./.venv/bin/activate'
     alias rg "command rg -S --max-columns 1000"
     alias rgl "command rg -S"
-
-    starship init fish | source
-    zoxide init fish | source
     alias cd 'z'
 
     function setproxy
@@ -31,6 +31,9 @@ if status is-interactive
         echo "Proxy unset"
     end
     set -gx NO_PROXY ".tsinghua.edu.cn,.acodev.top,.wakatime.com,$NO_PROXY"
+
+    # 直接启用代理
+    setproxy
 
     fish_hybrid_key_bindings
     # Delete every ctrl-m ctrl-p ctrl-n key bindings.
@@ -57,8 +60,6 @@ if status is-interactive
     end
     alias yazi 'y'
 
-    # 直接启用代理
-    setproxy
 end
 
 set -gx HOMEBREW_BREW_GIT_REMOTE "https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git"
