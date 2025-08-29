@@ -60,6 +60,28 @@ if status is-interactive
     end
     alias yazi 'y'
 
+    function rm --description "sort rm args"
+        set -l opts
+        set -l files
+        set -l after_double_dash 0
+
+        for arg in $argv
+            if test $after_double_dash -eq 1
+                # 进入 -- 模式，后面都当文件
+                set files $files $arg
+            else if test "$arg" = "--"
+                set after_double_dash 1
+                # 把 -- 本身也传给 rm（保持一致）
+                set files $files "--"
+            else if string match -qr '^-' -- $arg
+                set opts $opts $arg
+            else
+                set files $files $arg
+            end
+        end
+
+        command rm $opts $files
+    end
 end
 
 set -gx HOMEBREW_BREW_GIT_REMOTE "https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git"
