@@ -19,7 +19,18 @@ if status is-interactive
     alias rgl "command rg -S"
     alias cd 'z'
     alias sizeof 'du -d 0'
-    alias tmp 'cd ~/tmp/'
+    alias kg 'cargo'
+
+    function tmp --description 'create temp directory'
+        set -l target_path
+        if [ (count $argv) -gt 0 ]
+            set target_path "$HOME/tmp/$(basename $argv[1])"
+        else
+            set target_path "$HOME/tmp/"
+        end
+        command mkdir -p $target_path
+        cd $target_path
+    end
 
     function setproxy
         set -gx HTTPS_PROXY 'localhost:7890'
