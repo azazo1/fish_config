@@ -112,3 +112,7 @@ set --export BUN_INSTALL "$HOME/.bun"
 set --export PATH $BUN_INSTALL/bin $PATH
 # }}}
 
+# set editor of this shell
+if test -f "$(which nvim)"
+    set -gx EDITOR 'nvim'
+end
