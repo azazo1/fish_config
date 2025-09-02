@@ -32,7 +32,7 @@ if status is-interactive
         set -e HTTP_PROXY
         echo "Proxy unset"
     end
-    set -gx NO_PROXY ".tsinghua.edu.cn,.acodev.top,.wakatime.com,$NO_PROXY"
+    set -gx NO_PROXY "localhost,.tsinghua.edu.cn,.acodev.top,.wakatime.com,$NO_PROXY"
 
     # 直接启用代理
     setproxy
