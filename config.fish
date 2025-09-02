@@ -20,6 +20,7 @@ if status is-interactive
     alias cd 'z'
     alias sizeof 'du -d 0'
     alias kg 'cargo'
+    alias del 'trash'
 
     function pd --description "pick a directory"
         if [ (count $argv) -lt 1 ]
