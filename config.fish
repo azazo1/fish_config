@@ -21,6 +21,23 @@ if status is-interactive
     alias sizeof 'du -d 0'
     alias kg 'cargo'
 
+    function pd --description "pick a directory"
+        if [ (count $argv) -lt 1 ]
+            echo "pd: require an argument."
+            return 1
+        end
+        set -l target (command fd $argv[1] -t d | command fzf)
+        if not [ $status -eq 0 ]
+            echo "pd: user cancelled."
+            return 1
+        else if [ -z "$target" ]
+            echo "pd: target path is empty"
+            return 1
+        else
+            cd $target && command pwd
+        end
+    end
+
     function tmp --description 'create temp directory'
         set -l target_path
         if [ (count $argv) -gt 0 ]
