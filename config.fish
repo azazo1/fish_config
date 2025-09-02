@@ -99,6 +99,13 @@ if status is-interactive
         command launchctl list | head -n 1
         command launchctl list | command rg $domain
     end
+
+    function clc --description "claude code"
+        set -lx HTTPS_PROXY ""
+        set -lx HTTP_PROXY ""
+        command claude $argv
+    end
+    alias claude 'clc'
 end
 
 set -gx HOMEBREW_BREW_GIT_REMOTE "https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git"
