@@ -84,6 +84,21 @@ if status is-interactive
 
         command rm $opts $files
     end
+
+    function launchctl-restart --description "restart a service, arg is a domain like com.example.application1[.plist] or it's path"
+        if test -z "$argv"
+            echo "launchctl-restart: argument required."
+            return 1
+        end
+        set -l domain (basename (string replace --regex '(.+)\.plist$' '$1' $argv[1]))
+        echo "launchctl-restart: bootouting $domain..."
+        command launchctl bootout gui/(id -u)/$domain
+        echo "launchctl-restart: bootstrapping $domain..."
+        command launchctl bootstrap gui/(id -u) "$domain.plist"
+        sleep 2s
+        command launchctl list | head -n 1
+        command launchctl list | command rg $domain
+    end
 end
 
 set -gx HOMEBREW_BREW_GIT_REMOTE "https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git"
