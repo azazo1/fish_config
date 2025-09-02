@@ -9,7 +9,7 @@ if status is-interactive
     alias update '. ~/.config/fish/config.fish'
     alias config 'nvim ~/.config/fish/config.fish'
     alias mynote 'code ~/pjs/mynote'
-    alias psrg 'ps aux | rg '
+    alias pg 'ps aux | command rg '
     alias finder 'open -a finder '
     alias configkitty 'nvim ~/.config/kitty/kitty.conf'
     alias lg 'lazygit'
@@ -18,6 +18,8 @@ if status is-interactive
     alias rg "command rg -S --max-columns 1000"
     alias rgl "command rg -S"
     alias cd 'z'
+    alias sizeof 'du -d 0'
+    alias tmp 'cd ~/tmp/'
 
     function setproxy
         set -gx HTTPS_PROXY 'localhost:7890'
@@ -52,11 +54,11 @@ if status is-interactive
 
     function y
         set tmp (mktemp -t "yazi-cwd.XXXXXX")
-        /opt/homebrew/bin/yazi $argv --cwd-file="$tmp"
+        command yazi $argv --cwd-file="$tmp"
         if read -z cwd < "$tmp"; and [ -n "$cwd" ]; and [ "$cwd" != "$PWD" ]
             z -- "$cwd"
         end
-        rm -f -- "$tmp"
+        command rm -f -- "$tmp"
     end
     alias yazi 'y'
 
