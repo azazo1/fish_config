@@ -27,7 +27,7 @@ if status is-interactive
             echo "pd: require an argument."
             return 1
         end
-        set -l target (command fd $argv[1] -t d | command fzf)
+        set -l target (command fd $argv -t d | command fzf)
         if not [ $status -eq 0 ]
             echo "pd: user cancelled."
             return 1
