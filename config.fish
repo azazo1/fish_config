@@ -22,6 +22,26 @@ if status is-interactive
     alias kg 'cargo'
     alias del 'trash'
 
+    function ds_store_clean --description 'clear all the .DS_Store under specific directory, default is trashing them.'
+        argparse 'r/remove' 'h/help' -- $argv # remove instead of trash
+        or return 1
+        if set -ql _flag_help
+            echo "clean_ds_store [-hr]"
+            return
+        end
+        if set -ql _flag_remove
+            for file in (command fd -HI '.DS_Store$' -t f)
+                echo removing $file ...
+                command rm $file # test it first
+            end
+        else
+            for file in (command fd -HI '.DS_Store' -t f)
+                echo trashing $file ...
+                command trash $file # test it first
+            end
+        end
+    end
+
     function pd --description "pick a directory"
         if [ (count $argv) -lt 1 ]
             echo "pd: require an argument."
