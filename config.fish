@@ -1,19 +1,24 @@
+set -gx PATH "$HOME/.local/bin:$PATH"
+set -gx PATH "$HOME/scripts:$PATH"
 if status is-interactive
     # Commands to run in interactive sessions can go here
-    alias update "source ~/.config/fish/config.fish"
-    alias config "vim ~/.config/fish/config.fish"
-    alias nconfig "nvim ~/.config/fish/config.fish"
+    alias update '. ~/.config/fish/config.fish'
+    alias config 'nvim ~/.config/fish/config.fish'
+    alias vconfig 'code ~/.config/fish/config.fish'
     alias mp "multipass"
     alias activate "source ./.venv/bin/activate.fish"
-    alias rg '/usr/bin/rg -g "!*.html"'
-    alias rghtml '/usr/bin/rg -g "*.html"'
+    alias pg 'ps aux | command rg '
+    alias rg "command rg -S --max-columns 1000"
+    alias rgl "command rg -S"
     alias mountd "sudo mount -r UUID='00460A96460A8C9A' /mnt/d"
     alias mountc "sudo mount -r UUID='978E7B4F0DDA02C8' /mnt/c"
     alias umountd "sudo umount /mnt/d"
     alias umountc "sudo umount /mnt/c"
     alias dockert 'docker run -v tmpapp:/app --rm -it'
     alias ll 'ls -lha'
+    alias l 'ls'
     alias lzd 'lazydocker'
+    alias lg 'lazygit'
     fish_hybrid_key_bindings
     # Delete every ctrl-m ctrl-p ctrl-n key bindings.
     bind -e --preset -M insert ctrl-p ctrl-n
@@ -26,7 +31,65 @@ if status is-interactive
     bind --user -M visual ctrl-p up-or-search
     bind --user -M insert ctrl-n down-or-search
     bind --user -M visual ctrl-n down-or-search
-    bind --user -s -M insert alt-l accept-autosuggestion
+    bind --user -s -M insert super-l accept-autosuggestion
+    bind --user -s -M insert ctrl-j accept-autosuggestion
+
+    function y
+        set tmp (mktemp -t "yazi-cwd.XXXXXX")
+        command yazi $argv --cwd-file="$tmp"
+        if read -z cwd < "$tmp"; and [ -n "$cwd" ]; and [ "$cwd" != "$PWD" ]
+            z -- "$cwd"
+        end
+        command rm -f -- "$tmp"
+    end
+    alias yazi 'y'
+
+    function pd --description "pick a directory"
+        if [ (count $argv) -lt 1 ]
+            echo "pd: require an argument."
+            return 1
+        end
+        set -l target (command fd $argv -t d | command fzf)
+        if not [ $status -eq 0 ]
+            echo "pd: user cancelled."
+            return 1
+        else if [ -z "$target" ]
+            echo "pd: target path is empty"
+            return 1
+        else
+            cd $target && command pwd
+        end
+    end
+
+
+    function tmp --description 'create temp directory'
+        set -l target_path
+        if [ (count $argv) -gt 0 ]
+            set target_path "$HOME/tmp/$(basename $argv[1])"
+        else
+            set target_path "$HOME/tmp/"
+        end
+        command mkdir -p $target_path
+        cd $target_path
+    end
+
+    function setproxy
+        set -gx HTTPS_PROXY 'localhost:7890'
+        set -gx HTTP_PROXY 'localhost:7890'
+        echo "Proxy on localhost:7890 set"
+    end
+
+    function setproxyp
+        set -gx HTTPS_PROXY 'http://localhost:7890'
+        set -gx HTTP_PROXY 'http://localhost:7890'
+        echo "Proxy on http://localhost:7890 set"
+    end
+
+    function unsetproxy
+        set -e HTTPS_PROXY
+        set -e HTTP_PROXY
+        echo "Proxy unset"
+    end
 
     # --- apps ---
 
@@ -54,15 +117,6 @@ if status is-interactive
 end
 
 set -gx UV_DEFAULT_INDEX "https://pypi.tuna.tsinghua.edu.cn/simple"
-
-function setproxy
-    set -gx HTTPS_PROXY localhost:7890
-    set -gx HTTP_PROXY localhost:7890
-end
-
-function unsetproxy
-    set -e HTTPS_PROXY HTTP_PROXY
-end
 
 # --- apps ---
 
