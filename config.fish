@@ -6,8 +6,10 @@ if status is-interactive
     zoxide init fish | source
 
     alias ll 'ls -alh'
+    alias l 'ls'
     alias update '. ~/.config/fish/config.fish'
     alias config 'nvim ~/.config/fish/config.fish'
+    alias vconfig 'code ~/.config/fish/config.fish'
     alias mynote 'code ~/pjs/mynote'
     alias pg 'ps aux | command rg '
     alias finder 'open -a finder '
@@ -74,6 +76,12 @@ if status is-interactive
         set -gx HTTPS_PROXY 'localhost:7890'
         set -gx HTTP_PROXY 'localhost:7890'
         echo "Proxy on localhost:7890 set"
+    end
+
+    function setproxyp
+        set -gx HTTPS_PROXY 'http://localhost:7890'
+        set -gx HTTP_PROXY 'http://localhost:7890'
+        echo "Proxy on http://localhost:7890 set"
     end
 
     function unsetproxy
