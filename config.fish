@@ -1,11 +1,11 @@
-fish_add_path "$HOME/.local/bin"
-fish_add_path "$HOME/scripts"
-fish_add_path /opt/homebrew/opt/util-linux/bin
-fish_add_path /opt/homebrew/opt/util-linux/sbin
+fish_add_path --path "$HOME/.local/bin"
+fish_add_path --path "$HOME/scripts"
+fish_add_path --path /opt/homebrew/opt/util-linux/bin
+fish_add_path --path /opt/homebrew/opt/util-linux/sbin
 
-set -gx JAVA_HOME /Users/azazo1/toolkits/jdk-25.jdk/Contents/Home/
+set -gx JAVA_HOME /Users/azazo1/toolkits/jdk-17.0.16+8/Contents/Home/
 set -gx CLASSPATH $JAVA_HOME/lib/tools.jar:$JAVA_HOME/lib/dt.jar:.
-fish_add_path $JAVA_HOME/bin
+fish_add_path --path $JAVA_HOME/bin
 
 if status is-interactive
     # Commands to run in interactive sessions can go here
@@ -180,7 +180,7 @@ set -gx UV_DEFAULT_INDEX 'https://pypi.tuna.tsinghua.edu.cn/simple'
 
 # bun {{{
 set --export BUN_INSTALL "$HOME/.bun"
-fish_add_path $BUN_INSTALL/bin
+fish_add_path --path $BUN_INSTALL/bin
 # }}}
 
 # set editor of this shell
