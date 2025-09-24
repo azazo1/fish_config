@@ -1,5 +1,12 @@
-set -gx PATH "$HOME/.local/bin:$PATH"
-set -gx PATH "$HOME/scripts:$PATH"
+fish_add_path "$HOME/.local/bin"
+fish_add_path "$HOME/scripts"
+fish_add_path /opt/homebrew/opt/util-linux/bin
+fish_add_path /opt/homebrew/opt/util-linux/sbin
+
+set -gx JAVA_HOME /Users/azazo1/toolkits/jdk-25.jdk/Contents/Home/
+set -gx CLASSPATH $JAVA_HOME/lib/tools.jar:$JAVA_HOME/lib/dt.jar:.
+fish_add_path $JAVA_HOME/bin
+
 if status is-interactive
     # Commands to run in interactive sessions can go here
     starship init fish | source
@@ -16,7 +23,7 @@ if status is-interactive
     alias configkitty 'nvim ~/.config/kitty/kitty.conf'
     alias lg 'lazygit'
     alias dockert 'docker run --rm -it'
-    alias activate '. ./.venv/bin/activate'
+    alias activate '. ./.venv/bin/activate.fish'
     alias rg "command rg -S --max-columns 1000"
     alias rgl "command rg -S"
     alias cd 'z'
@@ -173,7 +180,7 @@ set -gx UV_DEFAULT_INDEX 'https://pypi.tuna.tsinghua.edu.cn/simple'
 
 # bun {{{
 set --export BUN_INSTALL "$HOME/.bun"
-set --export PATH $BUN_INSTALL/bin $PATH
+fish_add_path $BUN_INSTALL/bin
 # }}}
 
 # set editor of this shell
