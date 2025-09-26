@@ -3,7 +3,7 @@ fish_add_path --path "$HOME/scripts"
 fish_add_path --path /opt/homebrew/opt/util-linux/bin
 fish_add_path --path /opt/homebrew/opt/util-linux/sbin
 
-set -gx JAVA_HOME /Users/azazo1/toolkits/jdk-17.0.16+8/Contents/Home/
+set -gx JAVA_HOME /opt/homebrew/opt/openjdk
 set -gx CLASSPATH $JAVA_HOME/lib/tools.jar:$JAVA_HOME/lib/dt.jar:.
 fish_add_path --path $JAVA_HOME/bin
 
@@ -13,6 +13,7 @@ if status is-interactive
     zoxide init fish | source
 
     alias ll 'ls -alh'
+    alias sl 'ls'
     alias l 'ls'
     alias update '. ~/.config/fish/config.fish'
     alias config 'nvim ~/.config/fish/config.fish'
