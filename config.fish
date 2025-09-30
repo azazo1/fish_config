@@ -25,12 +25,14 @@ if status is-interactive
     alias lg 'lazygit'
     alias dockert 'docker run --rm -it'
     alias activate '. ./.venv/bin/activate.fish'
-    alias rg "command rg -S --max-columns 1000"
+    alias rgs "command rg -S --max-columns 1000"
     alias rgl "command rg -S"
     alias cd 'z'
     alias sizeof 'du -d 0'
     alias kg 'cargo'
     alias del 'trash'
+    alias mp 'multipass'
+    alias conda-shell 'eval "$(conda "shell.$(basename "$SHELL")" hook)"'
 
     function ds_store_clean --description 'clear all the .DS_Store under specific directory, default is trashing them.'
         argparse 'r/remove' 'h/help' -- $argv # remove instead of trash
