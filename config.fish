@@ -33,7 +33,11 @@ if status is-interactive
     alias kg 'cargo'
     alias del 'trash'
     alias mp 'multipass'
-    alias conda-shell 'eval "$(conda "shell.$(basename "$SHELL")" hook)"'
+    alias scpy 'scrcpy'
+
+    function conda-sh --description 'enter conda shell (sub shell).'
+      command fish -C 'eval "$(conda "shell.$(basename "$SHELL")" hook)"; echo "Conda shell created."'
+    end
 
     function ds_store_clean --description 'clear all the .DS_Store under specific directory, default is trashing them.'
         argparse 'r/remove' 'h/help' -- $argv # remove instead of trash
