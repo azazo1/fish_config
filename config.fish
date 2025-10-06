@@ -34,6 +34,7 @@ if status is-interactive
     alias del 'trash'
     alias mp 'multipass'
     alias scpy 'scrcpy'
+    alias j 'just'
 
     function conda-sh --description 'enter conda shell (sub shell).'
       command fish -C 'eval "$(conda "shell.$(basename "$SHELL")" hook)"; echo "Conda shell created."'
