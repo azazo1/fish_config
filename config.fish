@@ -36,7 +36,7 @@ if status is-interactive
     alias scpy 'scrcpy'
     alias j 'just'
     alias clr 'clear'
-    alias ohosndk 'export OHOS_NDK_HOME=/Users/azazo1/Library/OpenHarmony/Sdk/13/'
+    alias ohndk 'export OHOS_NDK_HOME=/Users/azazo1/Library/OpenHarmony/Sdk/13/'
 
     function nox --description 'remove x permission for all text file in folder'
         set -l target_path (pwd)
