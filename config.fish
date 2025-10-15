@@ -35,6 +35,22 @@ if status is-interactive
     alias mp 'multipass'
     alias scpy 'scrcpy'
     alias j 'just'
+    alias clr 'clear'
+    alias ohosndk 'export OHOS_NDK_HOME=/Users/azazo1/Library/OpenHarmony/Sdk/13/'
+
+    function nox --description 'remove x permission for all text file in folder'
+        set -l target_path (pwd)
+        if [ (count $argv) -ge 1 ]
+            set target_path $argv[1]
+        end
+        echo target_path: $target_path
+        for fp in (command fd . -HI -t x $target_path)
+            if command file --brief $fp | command rg -q "text"
+                command chmod -x $fp
+                echo $fp
+            end
+        end
+    end
 
     function conda-sh --description 'enter conda shell (sub shell).'
       command fish -C 'eval "$(conda "shell.$(basename "$SHELL")" hook)"; echo "Conda shell created."'
@@ -86,6 +102,7 @@ if status is-interactive
         end
         command mkdir -p $target_path
         cd $target_path
+        ls
     end
 
     function setproxy
