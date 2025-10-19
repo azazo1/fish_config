@@ -38,6 +38,15 @@ if status is-interactive
     alias clr 'clear'
     alias ohndk 'export OHOS_NDK_HOME=/Users/azazo1/Library/OpenHarmony/Sdk/13/'
 
+    function whisper --description 'generate audio subtitle'
+      set -l input_file $argv[1]
+      set -l input_file_noext (string replace -r '\.[^/]*$' '' $input_file)
+      set -l output_file $input_file_noext
+      echo "output file: $output_file.srt"
+      # command ffmpeg -i $input_file -c copy $input_file_noext.wav
+      $HOME/portables/whisper.cpp/whisper-cli --model ~/portables/whisper.cpp/ggml-large-v3-turbo.bin --language auto --print-colors --print-progress --output-srt --file $input_file --output-file $output_file
+    end
+
     function nox --description 'remove x permission for all text file in folder'
         set -l target_path (pwd)
         if [ (count $argv) -ge 1 ]
