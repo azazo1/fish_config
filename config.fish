@@ -63,7 +63,11 @@ if status is-interactive
     end
 
     function conda-sh --description 'enter conda shell (sub shell).'
-      command fish -C 'eval "$(conda "shell.$(basename "$SHELL")" hook)"; echo "Conda shell created."'
+      set -l suffix_command 'echo ""'
+      if [ (count $argv) -ge 1 ]
+          set suffix_command 'conda activate '$argv[1]
+      end
+      command fish -C 'eval "$(conda "shell.$(basename "$SHELL")" hook); echo \'Conda shell created.\'; '$suffix_command'"'
     end
 
     function ds_store_clean --description 'clear all the .DS_Store under specific directory, default is trashing them.'
