@@ -24,7 +24,7 @@ if status is-interactive
     alias finder 'open -a finder '
     alias configkitty 'nvim ~/.config/kitty/kitty.conf'
     alias lg 'lazygit'
-    alias dockert 'docker run --rm -it'
+    alias pmt 'podman run --rm -it'
     alias activate '. ./.venv/bin/activate.fish'
     alias rgs "command rg -S --max-columns 1000"
     alias rgl "command rg -S"
@@ -37,6 +37,7 @@ if status is-interactive
     alias j 'just'
     alias clr 'clear'
     alias ohndk 'export OHOS_NDK_HOME=/Users/azazo1/Library/OpenHarmony/Sdk/13/'
+    alias pm 'podman'
 
     function whisper --description 'generate audio subtitle'
       set -l input_file $argv[1]
