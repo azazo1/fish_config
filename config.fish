@@ -217,6 +217,7 @@ set -gx HOMEBREW_CORE_GIT_REMOTE "https://mirrors.tuna.tsinghua.edu.cn/git/homeb
 
 test ! -e "$HOME/.x-cmd.root/local/data/fish/rc.fish" || source "$HOME/.x-cmd.root/local/data/fish/rc.fish" # boot up x-cmd.
 set -gx UV_DEFAULT_INDEX 'https://pypi.tuna.tsinghua.edu.cn/simple'
+set -gx UV_LINK_MODE 'symlink'
 
 # bun {{{
 set --export BUN_INSTALL "$HOME/.bun"
