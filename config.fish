@@ -24,8 +24,10 @@ if status is-interactive
     alias mynote 'code ~/pjs/mynote'
     alias pg 'ps aux | command rg '
     alias finder 'open -a finder '
-    alias configkitty 'nvim ~/.config/kitty/kitty.conf'
+    alias kittyconfig 'nvim ~/.config/kitty/kitty.conf'
+    alias sshconfig 'nvim ~/.ssh/config'
     alias lg 'lazygit'
+    alias pm 'podman'
     alias pmt 'podman run --rm -it'
     alias activate '. ./.venv/bin/activate.fish'
     alias rgs "command rg -S --max-columns 1000"
@@ -38,16 +40,27 @@ if status is-interactive
     alias scpy 'scrcpy'
     alias j 'just'
     alias clr 'clear'
-    alias ohndk 'export OHOS_NDK_HOME=/Users/azazo1/Library/OpenHarmony/Sdk/13/'
-    alias pm 'podman'
+
+    function get-nerd-font --description "download jetbrains nerd font"
+        set -l store_path $argv[1]
+        set -q $store_path; or set store_path (pwd)
+        set -l font_filename "JetBrainsMonoNLNerdFontMono-Regular.ttf"
+        if test ! -d $store_path
+            echo "文件夹路径不存在: "$store_path
+            return 1
+        end
+        cd $store_path
+        curl -LO -C - "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/JetBrainsMono.zip"
+        unzip JetBrainsMono.zip $font_filename
+    end
 
     function whisper --description 'generate audio subtitle'
-      set -l input_file $argv[1]
-      set -l input_file_noext (string replace -r '\.[^/]*$' '' $input_file)
-      set -l output_file $input_file_noext
-      echo "output file: $output_file.srt"
-      # command ffmpeg -i $input_file -c copy $input_file_noext.wav
-      $HOME/portables/whisper.cpp/whisper-cli --model ~/portables/whisper.cpp/ggml-large-v3-turbo.bin --language auto --print-colors --print-progress --output-srt --file $input_file --output-file $output_file
+        set -l input_file $argv[1]
+        set -l input_file_noext (string replace -r '\.[^/]*$' '' $input_file)
+        set -l output_file $input_file_noext
+        echo "output file: $output_file.srt"
+        # command ffmpeg -i $input_file -c copy $input_file_noext.wav
+        $HOME/portables/whisper.cpp/whisper-cli --model ~/portables/whisper.cpp/ggml-large-v3-turbo.bin --language auto --print-colors --print-progress --output-srt --file $input_file --output-file $output_file
     end
 
     function nox --description 'remove x permission for all text file in folder'
@@ -65,11 +78,11 @@ if status is-interactive
     end
 
     function conda-sh --description 'enter conda shell (sub shell).'
-      set -l suffix_command 'echo ""'
-      if [ (count $argv) -ge 1 ]
-          set suffix_command 'conda activate '$argv[1]
-      end
-      command fish -C 'eval "$(conda "shell.$(basename "$SHELL")" hook); echo \'Conda shell created.\'; '$suffix_command'"'
+        set -l suffix_command 'echo ""'
+        if [ (count $argv) -ge 1 ]
+            set suffix_command 'conda activate '$argv[1]
+        end
+        command fish -C 'eval "$(conda "shell.$(basename "$SHELL")" hook); echo \'Conda shell created.\'; '$suffix_command'"'
     end
 
     function ds_store_clean --description 'clear all the .DS_Store under specific directory, default is trashing them.'
