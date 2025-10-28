@@ -1,8 +1,10 @@
 fish_add_path --path "$HOME/.local/bin"
 fish_add_path --path "$HOME/scripts"
-fish_add_path --path /opt/homebrew/opt/util-linux/bin
-fish_add_path --path /opt/homebrew/opt/util-linux/sbin
+fish_add_path --path (brew --prefix util-linux)/bin
+fish_add_path --path (brew --prefix util-linux)/sbin
 fish_add_path --path (python3 -m site --user-base)/bin
+fish_add_path --path (brew --prefix e2fsprogs)/bin
+fish_add_path --path (brew --prefix e2fsprogs)/sbin
 
 set -gx JAVA_HOME /opt/homebrew/opt/openjdk
 set -gx CLASSPATH $JAVA_HOME/lib/tools.jar:$JAVA_HOME/lib/dt.jar:.
