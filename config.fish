@@ -1,5 +1,7 @@
 fish_add_path --path "$HOME/.local/bin"
 fish_add_path --path "$HOME/scripts"
+fish_add_path --path (brew --prefix)/sbin
+fish_add_path --path (brew --prefix)/bin
 fish_add_path --path (brew --prefix util-linux)/bin
 fish_add_path --path (brew --prefix util-linux)/sbin
 fish_add_path --path (python3 -m site --user-base)/bin
