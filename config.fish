@@ -137,6 +137,7 @@ if status is-interactive
         cd $target_path
         ls
     end
+    complete -c tmp -a '(fd . --max-depth 1 -t d ~/tmp -x basename)' -f
 
     function setproxy
         set -gx HTTPS_PROXY 'localhost:7890'
