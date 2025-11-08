@@ -42,6 +42,8 @@ if status is-interactive
     alias scpy 'scrcpy'
     alias j 'just'
     alias clr 'clear'
+    alias uvpy 'uv run python'
+    alias fdh 'fd -HI'
 
     function get-nerd-font --description "download jetbrains nerd font"
         set -l store_path $argv[1]
