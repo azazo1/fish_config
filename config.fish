@@ -63,8 +63,8 @@ if status is-interactive
         set -l input_file_noext (string replace -r '\.[^/]*$' '' $input_file)
         set -l output_file $input_file_noext
         echo "output file: $output_file.srt"
-        # command ffmpeg -i $input_file -c copy $input_file_noext.wav
-        $HOME/portables/whisper.cpp/whisper-cli --model ~/portables/whisper.cpp/ggml-large-v3-turbo.bin --language auto --print-colors --print-progress --output-srt --file $input_file --output-file $output_file
+        command ffmpeg -i $input_file $input_file_noext.wav
+        $HOME/portables/whisper.cpp/whisper.cpp-repo/build/bin/whisper-cli --model ~/portables/whisper.cpp/ggml-large-v3-turbo.bin --language auto --print-colors --print-progress --output-srt --file $input_file_noext.wav --output-file $output_file
     end
 
     function nox --description 'remove x permission for all text file in folder'
