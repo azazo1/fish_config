@@ -12,6 +12,8 @@ set -gx JAVA_HOME /opt/homebrew/opt/openjdk
 set -gx CLASSPATH $JAVA_HOME/lib/tools.jar:$JAVA_HOME/lib/dt.jar:.
 fish_add_path --path $JAVA_HOME/bin
 
+set -gx RUSTC_WRAPPER=sccache
+
 if status is-interactive
     # Commands to run in interactive sessions can go here
     starship init fish | source
