@@ -29,8 +29,10 @@ if status is-interactive
     alias kittyconfig 'nvim ~/.config/kitty/kitty.conf'
     alias sshconfig 'nvim ~/.ssh/config'
     alias lg 'lazygit'
-    alias pm 'podman'
-    alias pmt 'podman run --rm -it'
+    # alias pm 'podman'
+    # alias pmt 'podman run --rm -it'
+    alias dockert 'docker run --rm -it'
+    alias dk 'docker'
     alias activate '. ./.venv/bin/activate.fish'
     alias rgs "command rg -S --max-columns 1000"
     alias rgl "command rg -S"
