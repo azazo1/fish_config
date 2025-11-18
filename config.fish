@@ -48,6 +48,8 @@ if status is-interactive
     alias clr 'clear'
     alias uvpy 'uv run python'
     alias fdh 'fd -HI'
+    alias lgnote 'lg -p ~/pjs/mynote'
+    alias configd 'cd $__fish_config_dir'
 
     function get-nerd-font --description "download jetbrains nerd font"
         set -l store_path $argv[1]
