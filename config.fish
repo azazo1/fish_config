@@ -34,15 +34,16 @@ if status is-interactive
     # alias pm 'podman'
     # alias pmt 'podman run --rm -it'
     alias dockert 'docker run --rm -it'
+    alias dkt 'docker run --rm -it'
     alias dk 'docker'
     alias activate '. ./.venv/bin/activate.fish'
     alias rgs "command rg -S --max-columns 1000"
     alias rgl "command rg -S"
     alias cd 'z'
-    alias sizeof 'du -d 0'
+    alias sizeof 'du -d 0 -h'
     alias kg 'cargo'
     alias del 'trash'
-    alias mp 'multipass'
+    # alias mp 'multipass'
     alias scpy 'scrcpy'
     alias j 'just'
     alias clr 'clear'
@@ -144,6 +145,13 @@ if status is-interactive
         ls
     end
     complete -c tmp -a '(fd . --max-depth 1 -t d ~/tmp -x basename)' -f
+
+    function mktmp --description 'create temp directory in system temp directory, remove dir when shell quit'
+        set -l tmp_path (mktemp -d)
+        fish -C "cd $tmp_path"
+        command rm -rf $tmp_path
+        echo (set_color green)Removed(set_color normal) (dirname $tmp_path)/(set_color blue)(basename $tmp_path)(set_color normal)/
+    end
 
     function setproxy
         set -gx HTTPS_PROXY 'localhost:7890'
