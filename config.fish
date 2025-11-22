@@ -117,11 +117,11 @@ if status is-interactive
     end
 
     function pd --description "pick a directory"
-        if [ (count $argv) -lt 1 ]
-            echo "pd: require an argument."
-            return 1
+        set -l args $argv
+        if [ (count $args) -lt 1 ]
+            set args "."
         end
-        set -l target (command fd $argv -t d | command fzf)
+        set -l target (command fd $args -t d | command fzf)
         if not [ $status -eq 0 ]
             echo "pd: user cancelled."
             return 1
@@ -147,10 +147,14 @@ if status is-interactive
     complete -c tmp -a '(fd . --max-depth 1 -t d ~/tmp -x basename)' -f
 
     function mktmp --description 'create temp directory in system temp directory, remove dir when shell quit'
-        set -l tmp_path (mktemp -d)
-        fish -C "cd $tmp_path"
-        command rm -rf $tmp_path
-        echo (set_color green)Removed(set_color normal) (dirname $tmp_path)/(set_color blue)(basename $tmp_path)(set_color normal)/
+        set -l tmp_path (command mktemp -d)
+        command fish -C "cd $tmp_path"
+        set -l tmp_size (command du -h -d 0 $tmp_path | cut -f 1)
+        if command rm -rf $tmp_path
+            echo (set_color green)Removed(set_color normal) (dirname $tmp_path)/(set_color blue)(basename $tmp_path)(set_color normal)/ (set_color yellow)$tmp_size(set_color normal)
+        else
+            echo (set_color red)Not Remove(set_color normal) (dirname $tmp_path)/(set_color blue)(basename $tmp_path)(set_color normal)/ (set_color yellow)$tmp_size(set_color normal)
+        end
     end
 
     function setproxy
