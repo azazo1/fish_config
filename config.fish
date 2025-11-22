@@ -150,10 +150,10 @@ if status is-interactive
         set -l tmp_path (command mktemp -d)
         command fish -C "cd $tmp_path"
         set -l tmp_size (command du -h -d 0 $tmp_path | cut -f 1)
-        if command rm -rf $tmp_path
-            echo (set_color green)Removed(set_color normal) (dirname $tmp_path)/(set_color blue)(basename $tmp_path)(set_color normal)/ (set_color yellow)$tmp_size(set_color normal)
+        if command trash $tmp_path
+            echo (set_color green)Trashed(set_color normal) (dirname $tmp_path)/(set_color blue)(basename $tmp_path)(set_color normal)/ (set_color yellow)$tmp_size(set_color normal)
         else
-            echo (set_color red)Not Remove(set_color normal) (dirname $tmp_path)/(set_color blue)(basename $tmp_path)(set_color normal)/ (set_color yellow)$tmp_size(set_color normal)
+            echo (set_color red)Not Trash(set_color normal) (dirname $tmp_path)/(set_color blue)(basename $tmp_path)(set_color normal)/ (set_color yellow)$tmp_size(set_color normal)
         end
     end
 
