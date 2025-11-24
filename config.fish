@@ -52,6 +52,15 @@ if status is-interactive
     alias lgnote 'lg -p ~/pjs/mynote'
     alias configd 'cd $__fish_config_dir'
 
+    function sizesof --description "search files and get the sizes of them."
+        if test (count $argv) -lt 1
+            echo "sizesof requires an argument."
+            return 1
+        end
+        set -l files (command fd -t f $argv)
+        command du -h -d 0 $files
+    end
+
     function get-nerd-font --description "download jetbrains nerd font"
         set -l store_path $argv[1]
         set -q $store_path; or set store_path (pwd)
@@ -113,6 +122,24 @@ if status is-interactive
                 echo trashing $file ...
                 command trash $file # test it first
             end
+        end
+    end
+
+    function pf --description "pick a file"
+        set -l args $argv
+        if [ (count $args) -lt 1 ]
+            echo -e "Usage: pf <file_search_pattern>"
+            return 1
+        end
+        set -l target (command fd $args -t f | command fzf)
+        if not [ $status -eq 0 ]
+            echo "pf: user cancelled."
+            return 1
+        else if [ -z "$target" ]
+            echo "pf: target path is empty"
+            return 1
+        else
+            open $target
         end
     end
 
