@@ -177,7 +177,12 @@ if status is-interactive
 
     function mktmp --description 'create temp directory in system temp directory, remove dir when shell quit'
         set -l tmp_path (command mktemp -d)
-        command fish -C "cd $tmp_path"
+        if [ (count $argv) -ge 1 ]
+            mkdir $tmp_path/$argv[1]
+            command fish -C "cd $tmp_path/$argv[1]"
+        else
+            command fish -C "cd $tmp_path"
+        end
         set -l tmp_size (command du -h -d 0 $tmp_path | cut -f 1)
         if command trash $tmp_path
             echo (set_color green)Trashed(set_color normal) (dirname $tmp_path)/(set_color blue)(basename $tmp_path)(set_color normal)/ (set_color yellow)$tmp_size(set_color normal)
