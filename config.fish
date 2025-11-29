@@ -19,6 +19,8 @@ if status is-interactive
     starship init fish | source
     zoxide init fish | source
 
+    alias pbc 'pbcopy'
+    alias pbp 'pbpaste'
     alias ll 'ls -alh'
     alias sl 'ls'
     alias l 'ls'
