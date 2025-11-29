@@ -183,6 +183,13 @@ if status is-interactive
         else
             command fish -C "cd $tmp_path"
         end
+        pushd $tmp_path
+        for item in (command fd . $tmp_path -d 1)
+            set -l item_size (command du -h -d 0 $item | awk '{print $1}')
+            set item_disp (command fd -d 1 --color=always '^'$(basename $item)'$') # --full-path "^$(string trim -r -c '/' $item)\$")
+            echo '-' $item_disp (set_color yellow)$item_size(set_color normal)
+        end
+        popd
         set -l tmp_size (command du -h -d 0 $tmp_path | cut -f 1)
         if command trash $tmp_path
             echo (set_color green)Trashed(set_color normal) (dirname $tmp_path)/(set_color blue)(basename $tmp_path)(set_color normal)/ (set_color yellow)$tmp_size(set_color normal)
