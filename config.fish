@@ -54,6 +54,10 @@ if status is-interactive
     alias lgnote 'lg -p ~/pjs/mynote'
     alias configd 'cd $__fish_config_dir'
 
+    function tinypw
+        command tinypw $argv -c | tail +2
+    end
+
     function sizesof --description "search files and get the sizes of them."
         if test (count $argv) -lt 1
             echo "sizesof requires an argument."
