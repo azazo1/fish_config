@@ -12,7 +12,9 @@ set -gx JAVA_HOME /opt/homebrew/opt/openjdk
 set -gx CLASSPATH $JAVA_HOME/lib/tools.jar:$JAVA_HOME/lib/dt.jar:.
 fish_add_path --path $JAVA_HOME/bin
 
+set -gx FISH_DOTENV_FILE "$__fish_config_dir/.env"
 set -gx RUSTC_WRAPPER sccache
+
 
 if status is-interactive
     # Commands to run in interactive sessions can go here
@@ -24,9 +26,9 @@ if status is-interactive
     alias ll 'ls -alh'
     alias sl 'ls'
     alias l 'ls'
-    alias update '. ~/.config/fish/config.fish'
-    alias config 'nvim ~/.config/fish/config.fish'
-    alias vconfig 'code ~/.config/fish/config.fish'
+    alias update ". $__fish_config_dir/config.fish"
+    alias config "nvim $__fish_config_dir/config.fish"
+    alias vconfig "code $__fish_config_dir/config.fish"
     alias mynote 'code ~/pjs/mynote'
     alias pg 'ps aux | command rg '
     alias finder 'open -a finder '
@@ -53,6 +55,19 @@ if status is-interactive
     alias fdh 'fd -HI'
     alias lgnote 'lg -p ~/pjs/mynote'
     alias configd 'cd $__fish_config_dir'
+
+    function _fish_dotenv_source
+        # First shell out to source the file in an isolated fashion. This is to
+        # ensure "atomicity" where either all settings as sourced or none at all.
+        if ! fish --private --no-config --command="source $FISH_DOTENV_FILE"
+            echo "dotenv: Error sourcing '$FISH_DOTENV_FILE' file, bailing." >&2
+            return 1
+        end
+
+        echo "dotenv: Sourcing '$FISH_DOTENV_FILE'" >&2
+        source $FISH_DOTENV_FILE
+    end
+    _fish_dotenv_source
 
     function tinypw
         command tinypw $argv -c | tail +2
