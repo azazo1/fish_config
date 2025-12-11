@@ -12,7 +12,7 @@ set -gx JAVA_HOME /opt/homebrew/opt/openjdk
 set -gx CLASSPATH $JAVA_HOME/lib/tools.jar:$JAVA_HOME/lib/dt.jar:.
 fish_add_path --path $JAVA_HOME/bin
 
-set -gx FISH_DOTENV_FILE "$__fish_config_dir/.env"
+set -gx FISH_DOTENV_FILE "$__fish_config_dir/.env.fish"
 set -gx RUSTC_WRAPPER sccache
 
 
