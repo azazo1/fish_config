@@ -69,6 +69,11 @@ if status is-interactive
     end
     _fish_dotenv_source
 
+    function dugit --description "disk usage of new files in git staged"
+        set -l files (git diff --cached --name-only --diff-filter=A)
+        command du -h -d 0 $files
+    end
+
     function tinypw
         command tinypw $argv -c | tail +2
     end
