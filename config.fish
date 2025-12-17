@@ -21,6 +21,8 @@ if status is-interactive
     starship init fish | source
     zoxide init fish | source
 
+    alias ht 'howlto'
+    alias nv 'nvim'
     alias pbc 'pbcopy'
     alias pbp 'pbpaste'
     alias ll 'ls -alh'
@@ -70,8 +72,13 @@ if status is-interactive
     _fish_dotenv_source
 
     function dugit --description "disk usage of new files in git staged"
-        set -l files (git diff --cached --name-only --diff-filter=A)
-        command du -h -d 0 $files
+        set -l files (git diff --name-only --diff-filter=ARMC) (git diff --cached --name-only --diff-filter=ARMC)
+        set files (echo $files | sort | uniq)
+        if [ -z "$files" ]
+            echo dugit: No file to analyze.
+            return 1
+        end
+        command du -h -d 0 (string split ' ' $files)
     end
 
     function tinypw
