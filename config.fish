@@ -207,7 +207,7 @@ if status is-interactive
     complete -c tmp -a '(fd . --max-depth 1 -t d ~/tmp -x basename)' -f
 
     function mktmp --description 'create temp directory in system temp directory, remove dir when shell quit'
-        set -l tmp_path (command mktemp -d)
+        set -l tmp_path (command mktemp -d -t mktmp)
         if [ (count $argv) -ge 1 ]
             mkdir $tmp_path/$argv[1]
             command fish -C "cd $tmp_path/$argv[1]"
