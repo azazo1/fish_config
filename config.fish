@@ -7,6 +7,7 @@ fish_add_path --path (brew --prefix util-linux)/sbin
 fish_add_path --path (python3 -m site --user-base)/bin
 fish_add_path --path (brew --prefix e2fsprogs)/bin
 fish_add_path --path (brew --prefix e2fsprogs)/sbin
+fish_add_path --path (go env GOPATH)/bin
 
 set -gx JAVA_HOME /opt/homebrew/opt/openjdk
 set -gx CLASSPATH $JAVA_HOME/lib/tools.jar:$JAVA_HOME/lib/dt.jar:.
