@@ -57,7 +57,7 @@ if status is-interactive
     alias clr 'clear'
     alias uvpy 'uv run python'
     alias fdh 'fd -HI'
-    alias lgnote 'lg -p ~/pjs/mynote'
+    alias lgnote 'lazygit -p ~/pjs/mynote'
     alias configd 'cd $__fish_config_dir'
 
     function _fish_dotenv_source
