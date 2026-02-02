@@ -60,6 +60,22 @@ if status is-interactive
     alias lgnote 'lazygit -p ~/pjs/mynote'
     alias configd 'cd $__fish_config_dir'
 
+    function rsbuild --description 'set cargo build target directory'
+        set -l metadata (command cargo metadata --no-deps --format-version 1)
+        if test $status -ne 0
+            echo (set_color red) "not in a rust project" (set_color normal)
+            return 1
+        end
+        set -l pkg_name (echo "$metadata" | command jq -r '.packages[0].name')
+        set -l target_path "/Volumes/build/rs/target/$pkg_name"
+        if mkdir -p $target_path
+            set -gx CARGO_TARGET_DIR $target_path
+            echo "set CARGO_TARGET_DIR to $target_path"
+        else
+            echo "external disk not mounted"
+        end
+    end
+
     function _fish_dotenv_source
         # First shell out to source the file in an isolated fashion. This is to
         # ensure "atomicity" where either all settings as sourced or none at all.
