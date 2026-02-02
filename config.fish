@@ -63,18 +63,38 @@ if status is-interactive
     function rsbuild --description 'set cargo build target directory'
         set -l metadata (command cargo metadata --no-deps --format-version 1)
         if test $status -ne 0
-            echo (set_color red) "not in a rust project" (set_color normal)
+            echo "not in a rust project"
             return 1
         end
-        set -l pkg_name (echo "$metadata" | command jq -r '.packages[0].name')
-        set -l target_path "/Volumes/build/rs/target/$pkg_name"
-        if mkdir -p $target_path
-            set -gx CARGO_TARGET_DIR $target_path
-            echo "set CARGO_TARGET_DIR to $target_path"
-        else
-            echo "external disk not mounted"
+        set -l project_root (echo "$metadata" | command jq -r '.workspace_root')
+        set -l raw_target_path (echo "$metadata" | command jq -r '.target_directory')
+        set -l project_name (basename $project_root)
+        set -l target_path "/Volumes/build/rs/target/$project_name"
+        if ! mkdir -p $target_path
+            echo "failed to create target directory"
+            return 1
         end
+        if test "$raw_target_path" = "$target_path"
+            echo "already configured target-dir to $target_path"
+            return 0
+        end
+        set -l config_file "$project_root/.cargo/config.toml"
+        mkdir -p (dirname $config_file)
+        touch $config_file
+        if ! grep -q "^\[build\]" "$config_file"
+            echo -e "\n[build]" >> "$config_file"
+        end
+        set -l sed_inplace -i
+        if test (uname) = "Darwin"
+            set sed_inplace -i '' # macos 下, 这个 '' 是必要的
+        end
+        sed $sed_inplace '/^target-dir[[:space:]]*=/ s|^|#|' "$config_file" # 注释原来的
+        sed $sed_inplace "/^\[build\]/a\\
+target-dir = \"$target_path\"
+" "$config_file"
+        echo "configured target-dir to $target_path"
     end
+    alias rsdir 'rsbuild'
 
     function _fish_dotenv_source
         # First shell out to source the file in an isolated fashion. This is to
