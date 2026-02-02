@@ -69,30 +69,23 @@ if status is-interactive
         set -l project_root (echo "$metadata" | command jq -r '.workspace_root')
         set -l raw_target_path (echo "$metadata" | command jq -r '.target_directory')
         set -l project_name (basename $project_root)
-        set -l target_path "/Volumes/build/rs/target/$project_name"
-        if ! mkdir -p $target_path
-            echo "failed to create target directory"
+        set -l build_mount "/Volumes/build"
+        set -l target_path "$build_mount/rs/target/$project_name"
+        if not test -d "$build_mount"
+            echo "Error: External build volume '$build_mount' not found."
             return 1
         end
-        if test "$raw_target_path" = "$target_path"
-            echo "already configured target-dir to $target_path"
+        if test -L "$raw_target_path"; and test (readlink "$raw_target_path") = "$target_path"
+            echo "Target is already symlinked to $target_path"
             return 0
         end
-        set -l config_file "$project_root/.cargo/config.toml"
-        mkdir -p (dirname $config_file)
-        touch $config_file
-        if ! grep -q "^\[build\]" "$config_file"
-            echo -e "\n[build]" >> "$config_file"
+        if ! mkdir -p "$target_path"
+            echo "failed to create external target directory"
+            return 1
         end
-        set -l sed_inplace -i
-        if test (uname) = "Darwin"
-            set sed_inplace -i '' # macos 下, 这个 '' 是必要的
-        end
-        sed $sed_inplace '/^target-dir[[:space:]]*=/ s|^|#|' "$config_file" # 注释原来的
-        sed $sed_inplace "/^\[build\]/a\\
-target-dir = \"$target_path\"
-" "$config_file"
-        echo "configured target-dir to $target_path"
+        set -l cmd "command cargo clean; and command ln -s \"$target_path\" \"$raw_target_path\""
+        commandline -r "$cmd"
+        echo "Command injected to your prompt. Press [Enter] to execute."
     end
     alias rsdir 'rsbuild'
 
