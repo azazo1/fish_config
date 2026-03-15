@@ -16,7 +16,6 @@ fish_add_path --path $JAVA_HOME/bin
 set -gx FISH_DOTENV_FILE "$__fish_config_dir/.env.fish"
 set -gx RUSTC_WRAPPER sccache
 
-
 if status is-interactive
     # Commands to run in interactive sessions can go here
     starship init fish | source
@@ -139,6 +138,8 @@ if status is-interactive
     end
 
     function whisper --description 'generate audio subtitle'
+        echo (set_color yellow)use "`qwen3-asr -i <file> -srt` instead"(set_color normal)
+        return 1
         set -l input_file $argv[1]
         set -l input_file_noext (string replace -r '\.[^/]*$' '' $input_file)
         set -l output_file $input_file_noext
