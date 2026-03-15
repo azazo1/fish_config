@@ -19,6 +19,12 @@ set -gx RUSTC_WRAPPER sccache
 if status is-interactive
     # Commands to run in interactive sessions can go here
     starship init fish | source
+    if env | rg -q vscode
+        function prevent_csi_u --on-event fish_preexec
+            printf '\e[>0u'
+        end
+    end
+
     zoxide init fish | source
     command howlto --init | source
 
