@@ -352,7 +352,7 @@ if status is-interactive
         command launchctl list | command rg $domain
     end
 
-    command fzf --fish | source
+    # command fzf --fish | source
 end
 
 set -gx HOMEBREW_BREW_GIT_REMOTE "https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git"
