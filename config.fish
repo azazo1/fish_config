@@ -287,7 +287,7 @@ if status is-interactive
     set -gx NO_PROXY "localhost,.tsinghua.edu.cn,.acodev.top,.wakatime.com,$NO_PROXY"
 
     # 直接启用代理
-    setproxyp
+    setproxy
 
     fish_hybrid_key_bindings
     # Delete every ctrl-m ctrl-p ctrl-n key bindings.
