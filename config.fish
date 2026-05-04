@@ -38,18 +38,23 @@ if status is-interactive
     bind --user -s -M insert super-l accept-autosuggestion
     bind --user -s -M insert ctrl-j accept-autosuggestion
 
-    function _fish_dotenv_source
+    function load_dotenv --description "load .env file of current dir"
+        set -l env_file ".env.fish"
+        if test (count $argv) -ge 1
+            set env_file $argv[1]
+        end
         # First shell out to source the file in an isolated fashion. This is to
         # ensure "atomicity" where either all settings as sourced or none at all.
-        if ! fish --private --no-config --command="source $FISH_DOTENV_FILE"
-            echo "dotenv: Error sourcing '$FISH_DOTENV_FILE' file, bailing." >&2
+        if ! fish --private --no-config --command="source $env_file"
+            echo "dotenv: Error sourcing '$env_file' file, bailing." >&2
             return 1
         end
 
-        echo "dotenv: Sourcing '$FISH_DOTENV_FILE'" >&2
-        source $FISH_DOTENV_FILE
+        echo "dotenv: Sourcing '$env_file'" >&2
+        source $env_file
     end
-    _fish_dotenv_source
+
+    load_dotenv "$__fish_config_dir/.env.fish"
 
     function dugit --description "disk usage of new files in git staged"
         set -l files (git diff --name-only --diff-filter=ARMC) (git diff --cached --name-only --diff-filter=ARMC)
@@ -58,7 +63,7 @@ if status is-interactive
             echo dugit: No file to analyze.
             return 1
         end
-        command du -h -d 0 (string split ' ' $files)
+        command du -c -h -d 0 (string split ' ' $files)
     end
 
     function setup-nerd-font
