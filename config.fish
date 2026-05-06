@@ -158,7 +158,7 @@ if status is-interactive
         end
     end
 
-    set -l PROXY_BASE "localhost:7890"
+    set -g PROXY_BASE "localhost:7890"
     function setproxy
         set -gx HTTPS_PROXY $PROXY_BASE
         set -gx HTTP_PROXY $PROXY_BASE
