@@ -37,7 +37,8 @@ if status is-interactive
     alias l 'ls'
     alias update ". $__fish_config_dir/config.fish"
     alias config "nvim $__fish_config_dir/config.fish"
-    alias vconfig "code $__fish_config_dir/config.fish"
+    alias vconfig "code $__fish_config_dir"
+    alias configv "code $__fish_config_dir"
     alias mynote 'code ~/pjs/mynote'
     alias pg 'ps aux | command rg '
     alias finder 'open -a finder '
@@ -293,6 +294,32 @@ if status is-interactive
 
     # 直接启用代理
     setproxy
+
+    function img2webp --description '使用 mogrify 批量转换图片为 WebP'
+        argparse 'q/quality=' -- $argv
+        or return
+
+        set -l q_val 75
+        if set -q _flag_q
+            set q_val $_flag_q
+        end
+
+        set -l targets $argv
+        if test (count $targets) -eq 0
+            set targets *.{png,jpg,jpeg,bmp,gif,PNG,JPG,JPEG,BMP,GIF}
+        end
+
+        if not set -q targets[1]; or not test -f "$targets[1]"
+            echo "未发现可转换的文件. "
+            return 1
+        end
+
+        echo "正在批量转换 (Quality: $q_val)..."
+
+        magick mogrify -format webp -quality $q_val $targets
+
+        echo "转换任务已通过 mogrify 批量完成."
+    end
 
     fish_hybrid_key_bindings
     # Delete every ctrl-m ctrl-p ctrl-n key bindings.
