@@ -158,16 +158,17 @@ if status is-interactive
         end
     end
 
+    set -l PROXY_BASE "localhost:7890"
     function setproxy
-        set -gx HTTPS_PROXY 'localhost:7890'
-        set -gx HTTP_PROXY 'localhost:7890'
-        echo "Proxy on localhost:7890 set"
+        set -gx HTTPS_PROXY $PROXY_BASE
+        set -gx HTTP_PROXY $PROXY_BASE
+        echo "Proxy on $PROXY_BASE set"
     end
 
     function setproxyp
-        set -gx HTTPS_PROXY 'http://localhost:7890'
-        set -gx HTTP_PROXY 'http://localhost:7890'
-        echo "Proxy on http://localhost:7890 set"
+        set -gx HTTPS_PROXY "http://$PROXY_BASE"
+        set -gx HTTP_PROXY "http://$PROXY_BASE"
+        echo "Proxy on http://$PROXY_BASE set"
     end
 
     function unsetproxy
