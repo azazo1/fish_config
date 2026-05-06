@@ -10,7 +10,6 @@ if status is-interactive
     alias mp "multipass"
     alias activate "source ./.venv/bin/activate.fish"
     alias pg 'ps aux | command rg '
-    alias rg "command rg -S --max-columns 1000"
     alias rgl "command rg -S"
     alias dkt 'docker run -v tmpapp:/app --rm -it'
     alias ll 'ls -lha'
