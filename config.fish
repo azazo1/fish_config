@@ -192,39 +192,11 @@ if status is-interactive
     echo 'uv generate-shell-completion fish | source' > ~/.config/fish/completions/uv.fish
     echo 'uvx --generate-shell-completion fish | source' > ~/.config/fish/completions/uvx.fish
     # }
-
-    # nvim {
-    fish_add_path --path "/opt/nvim-linux-x86_64/bin"
-    if test -f "$(which nvim)"
-        set -gx EDITOR 'nvim'
-    end
-    # }
-
-    # x-cmd {
-    test ! -e "$HOME/.x-cmd.root/local/data/fish/rc.fish" || source "$HOME/.x-cmd.root/local/data/fish/rc.fish" # boot up x-cmd.
-    # }
 end
 
 set -gx UV_DEFAULT_INDEX "https://pypi.tuna.tsinghua.edu.cn/simple"
 
 # --- apps ---
-
-# rust {
-# source "$HOME/.cargo/env" # shell 语法不兼容, 无法加载
-# }
-
-# uv
-# source "$HOME/.local/bin/env" # shell 语法不兼容, 无法加载
-# }
-
-# bun {
-set -gx BUN_INSTALL "$HOME/.bun"
-set -gx PATH "$BUN_INSTALL/bin:$PATH"
-# }
-
-# cmake {
-set -gx PATH "~/portables/cmake-4.1.0-rc4-linux-x86_64/bin:$PATH"
-# }
 
 # go {
 set -gx GOPATH "$HOME/.go"
