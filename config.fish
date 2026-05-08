@@ -65,6 +65,7 @@ if status is-interactive
     alias fdh 'fd -HI'
     alias lgnote 'lazygit -p ~/pjs/mynote'
     alias configd 'cd $__fish_config_dir'
+    alias gdd 'gdu-diff'
 
     function rsbuild --description 'set cargo build target directory'
         set -l metadata (command cargo metadata --no-deps --format-version 1)
