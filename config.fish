@@ -16,6 +16,8 @@ fish_add_path --path $JAVA_HOME/bin
 set -gx FISH_DOTENV_FILE "$__fish_config_dir/.env.fish"
 set -gx RUSTC_WRAPPER sccache
 
+set -gx NO_PROXY ".local,localhost,.tsinghua.edu.cn,.acodev.top,.wakatime.com"
+
 if status is-interactive
     # Commands to run in interactive sessions can go here
     starship init fish | source
@@ -66,6 +68,7 @@ if status is-interactive
     alias lgnote 'lazygit -p ~/pjs/mynote'
     alias configd 'cd $__fish_config_dir'
     alias gdd 'gdu-diff'
+    alias cx 'codex'
 
     function rsbuild --description 'set cargo build target directory'
         set -l metadata (command cargo metadata --no-deps --format-version 1)
@@ -299,7 +302,6 @@ if status is-interactive
         set -e HTTP_PROXY
         echo "Proxy unset"
     end
-    set -gx NO_PROXY "localhost,.tsinghua.edu.cn,.acodev.top,.wakatime.com,$NO_PROXY"
 
     # 直接启用代理
     setproxy
