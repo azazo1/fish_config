@@ -304,7 +304,7 @@ if status is-interactive
     end
 
     # 直接启用代理
-    setproxy
+    setproxyp
 
     function img2webp --description '使用 mogrify 批量转换图片为 WebP'
         argparse 'q/quality=' -- $argv
