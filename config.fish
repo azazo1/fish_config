@@ -31,7 +31,6 @@ if status is-interactive
     command howlto --init | source
 
     alias ht 'howlto'
-    alias nv 'nvim'
     alias pbc 'pbcopy'
     alias pbp 'pbpaste'
     alias ll 'ls -alh'
@@ -69,6 +68,9 @@ if status is-interactive
     alias configd 'cd $__fish_config_dir'
     alias gdd 'gdu-diff'
     alias cx 'codex'
+    alias cxa 'codex app'
+    alias cxapp 'codex app'
+
 
     function rsbuild --description 'set cargo build target directory'
         set -l metadata (command cargo metadata --no-deps --format-version 1)
