@@ -18,6 +18,8 @@ set -gx RUSTC_WRAPPER sccache
 
 set -gx NO_PROXY ".local,localhost,.tsinghua.edu.cn,.acodev.top,.wakatime.com"
 
+set -gx COPYFILE_DISABLE=1 # 禁止 tar 打包 ._* 这类的文件
+
 if status is-interactive
     # Commands to run in interactive sessions can go here
     starship init fish | source
@@ -30,12 +32,12 @@ if status is-interactive
     zoxide init fish | source
     command howlto --init | source
 
-    alias ht 'howlto'
-    alias pbc 'pbcopy'
-    alias pbp 'pbpaste'
+    alias ht howlto
+    alias pbc pbcopy
+    alias pbp pbpaste
     alias ll 'ls -alh'
-    alias sl 'ls'
-    alias l 'ls'
+    alias sl ls
+    alias l ls
     alias update ". $__fish_config_dir/config.fish"
     alias config "nvim $__fish_config_dir/config.fish"
     alias vconfig "code $__fish_config_dir"
@@ -45,34 +47,33 @@ if status is-interactive
     alias finder 'open -a finder '
     alias kittyconfig 'nvim ~/.config/kitty/kitty.conf'
     alias sshconfig 'nvim ~/.ssh/config'
-    alias lg 'lazygit'
+    alias lg lazygit
     # alias pm 'podman'
     # alias pmt 'podman run --rm -it'
     alias dockert 'docker run --rm -it'
     alias dkt 'docker run --rm -it'
-    alias dk 'docker'
+    alias dk docker
     alias activate '. ./.venv/bin/activate.fish'
     alias rgs "command rg -S --max-columns 1000"
     alias rgl "command rg -S"
-    alias cd 'z'
+    alias cd z
     alias sizeof 'du -d 0 -h'
-    alias kg 'cargo'
-    alias del 'trash'
+    alias kg cargo
+    alias del trash
     # alias mp 'multipass'
-    alias scpy 'scrcpy'
-    alias j 'just'
-    alias clr 'clear'
+    alias scpy scrcpy
+    alias j just
+    alias clr clear
     alias uvpy 'uv run python'
     alias fdh 'fd -HI'
     alias lgnote 'lazygit -p ~/pjs/mynote'
     alias configd 'cd $__fish_config_dir'
-    alias gdd 'gdu-diff'
-    alias cx 'codex'
+    alias gdd gdu-diff
+    alias cx codex
     alias cxa 'codex app'
     alias cxapp 'codex app'
     alias up 'docker compose up'
     alias down 'docker compose down'
-
 
     function rsbuild --description 'set cargo build target directory'
         set -l metadata (command cargo metadata --no-deps --format-version 1)
@@ -83,7 +84,7 @@ if status is-interactive
         set -l project_root (echo "$metadata" | command jq -r '.workspace_root')
         set -l raw_target_path (echo "$metadata" | command jq -r '.target_directory')
         set -l project_name (basename $project_root)
-        set -l build_mount "/Volumes/build"
+        set -l build_mount /Volumes/build
         set -l target_path "$build_mount/rs/target/$project_name"
         if not test -d "$build_mount"
             echo "Error: External build volume '$build_mount' not found."
@@ -101,7 +102,7 @@ if status is-interactive
         commandline -r "$cmd"
         echo "Command injected to your prompt. Press [Enter] to execute."
     end
-    alias rsdir 'rsbuild'
+    alias rsdir rsbuild
 
     function load_dotenv --description "load .env file of current dir"
         set -l env_file ".env.fish"
@@ -175,7 +176,7 @@ if status is-interactive
         end
         echo target_path: $target_path
         for fp in (command fd . -HI -t x $target_path)
-            if command file --brief $fp | command rg -q "text"
+            if command file --brief $fp | command rg -q text
                 command chmod -x $fp
                 echo $fp
             end
@@ -191,7 +192,7 @@ if status is-interactive
     end
 
     function ds_store_clean --description 'clear all the .DS_Store under specific directory, default is trashing them.'
-        argparse 'r/remove' 'h/help' -- $argv # remove instead of trash
+        argparse r/remove h/help -- $argv # remove instead of trash
         or return 1
         if set -ql _flag_help
             echo "clean_ds_store [-hr]"
@@ -270,7 +271,7 @@ if status is-interactive
         for item in (command fd . $tmp_path -d 1)
             set -l item_size (command du -h -d 0 $item | awk '{print $1}')
             set item_disp (command fd -d 1 --color=always '^'$(basename $item)'$') # --full-path "^$(string trim -r -c '/' $item)\$")
-            echo '-' $item_disp (set_color yellow)$item_size(set_color normal)
+            echo - $item_disp (set_color yellow)$item_size(set_color normal)
         end
         popd
         set -l tmp_size (command du -h -d 0 $tmp_path | cut -f 1)
@@ -354,12 +355,12 @@ if status is-interactive
     function y
         set tmp (mktemp -t "yazi-cwd.XXXXXX")
         command yazi $argv --cwd-file="$tmp"
-        if read -z cwd < "$tmp"; and [ -n "$cwd" ]; and [ "$cwd" != "$PWD" ]
+        if read -z cwd <"$tmp"; and [ -n "$cwd" ]; and [ "$cwd" != "$PWD" ]
             z -- "$cwd"
         end
         command rm -f -- "$tmp"
     end
-    alias yazi 'y'
+    alias yazi y
 
     function rm --description "sort rm args"
         set -l opts
@@ -370,10 +371,10 @@ if status is-interactive
             if test $after_double_dash -eq 1
                 # 进入 -- 模式，后面都当文件
                 set files $files $arg
-            else if test "$arg" = "--"
+            else if test "$arg" = --
                 set after_double_dash 1
                 # 把 -- 本身也传给 rm（保持一致）
-                set files $files "--"
+                set files $files --
             else if string match -qr '^-' -- $arg
                 set opts $opts $arg
             else
@@ -417,5 +418,5 @@ fish_add_path --path $BUN_INSTALL/bin
 
 # set editor of this shell
 if test -f "$(which nvim)"
-    set -gx EDITOR 'nvim'
+    set -gx EDITOR nvim
 end
