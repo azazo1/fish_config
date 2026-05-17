@@ -70,6 +70,8 @@ if status is-interactive
     alias cx 'codex'
     alias cxa 'codex app'
     alias cxapp 'codex app'
+    alias up 'docker compose up'
+    alias down 'docker compose down'
 
 
     function rsbuild --description 'set cargo build target directory'
