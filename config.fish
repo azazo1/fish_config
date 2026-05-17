@@ -18,7 +18,7 @@ set -gx RUSTC_WRAPPER sccache
 
 set -gx NO_PROXY ".local,localhost,.tsinghua.edu.cn,.acodev.top,.wakatime.com"
 
-set -gx COPYFILE_DISABLE=1 # 禁止 tar 打包 ._* 这类的文件
+set -gx COPYFILE_DISABLE 1 # 禁止 tar 打包 ._* 这类的文件
 
 if status is-interactive
     # Commands to run in interactive sessions can go here
