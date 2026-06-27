@@ -53,8 +53,8 @@ if status is-interactive
     alias kittyconfig 'nvim ~/.config/kitty/kitty.conf'
     alias sshconfig 'nvim ~/.ssh/config'
     alias lg lazygit
-    # alias pm 'podman'
-    # alias pmt 'podman run --rm -it'
+    alias lgn 'lazygit -p ~/pjs/mynote'
+    alias lgnote 'lazygit -p ~/pjs/mynote'
     alias dockert 'docker run --rm -it'
     alias dkt 'docker run --rm -it'
     alias dk docker
@@ -71,7 +71,6 @@ if status is-interactive
     alias clr clear
     alias uvpy 'uv run python'
     alias fdh 'fd -HI'
-    alias lgnote 'lazygit -p ~/pjs/mynote'
     alias configd 'cd $__fish_config_dir'
     alias gdd gdu-diff
     alias cx codex
@@ -79,6 +78,7 @@ if status is-interactive
     alias cxapp 'codex app'
     alias up 'docker compose up'
     alias down 'docker compose down'
+    alias 7z '7zz'
 
     function rsbuild --description 'set cargo build target directory'
         set -l metadata (command cargo metadata --no-deps --format-version 1)
