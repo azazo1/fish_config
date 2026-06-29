@@ -1,5 +1,5 @@
 function ramdisk -d "Create a macOS RAM disk (e.g., 200M, 1.5G, 2GB)"
-    set -l disk_name "RAMDisk"
+    set -l disk_name "ramdisk"
 
     # 1. 唯一性校验：检查是否已经存在同名内存盘，防止重复创建
     if test -d "/Volumes/$disk_name"
