@@ -70,7 +70,160 @@ function __codessh_folder_uri_for -a authority path
     end
 end
 
+function __codessh_sh_quote -a value
+    printf "'%s'" (string replace -a "'" "'\\''" -- "$value")
+end
+
+function __codessh_ps_quote -a value
+    printf "'%s'" (string replace -a "'" "''" -- "$value")
+end
+
+function __codessh_ssh_completion_args -a host
+    printf '%s\n' -o BatchMode=yes -o ConnectTimeout=2 -o NumberOfPasswordPrompts=0 -- "$host"
+end
+
+function __codessh_emit_remote_dirs -a dir stem description
+    set -l max_items 200
+    set -l count 0
+
+    while read -l entry
+        set entry (string trim -- "$entry")
+        test -n "$entry"; or continue
+        string match -q '*/' -- "$entry"; or continue
+
+        set -l name (string replace -r '/$' '' -- "$entry")
+        if test -n "$stem"
+            string match -q -- "$stem*" "$name"; or continue
+        end
+
+        set -l candidate
+        if test -z "$dir"
+            set candidate "$entry"
+        else if string match -q '*/' -- "$dir"
+            set candidate "$dir$entry"
+        else
+            set candidate "$dir/$entry"
+        end
+
+        printf '%s\t%s\n' "$candidate" "$description"
+        set count (math $count + 1)
+        test "$count" -lt "$max_items"; or break
+    end
+end
+
+function __codessh_complete_remote_posix_paths -a host prefix
+    set -l dir /
+    set -l stem ''
+
+    if test -n "$prefix"
+        if string match -q '*/' -- "$prefix"
+            set dir "$prefix"
+        else if string match -q '*/*' -- "$prefix"
+            set dir (string replace -r '/[^/]*$' '' -- "$prefix")
+            set stem (string replace -r '^.*/' '' -- "$prefix")
+            test -n "$dir"; or set dir /
+        else
+            set dir .
+            set stem "$prefix"
+        end
+    end
+
+    set -l quoted_dir (__codessh_sh_quote "$dir")
+    set -l remote_cmd "LC_ALL=C command ls -1Ap -- $quoted_dir 2>/dev/null"
+    set -l ssh_args (__codessh_ssh_completion_args "$host")
+
+    command ssh $ssh_args "$remote_cmd" 2>/dev/null | __codessh_emit_remote_dirs "$dir" "$stem" 'Remote directory'
+end
+
+function __codessh_encode_powershell -a script
+    type -q iconv; or return 1
+    type -q base64; or return 1
+
+    printf '%s' "$script" | iconv -f UTF-8 -t UTF-16LE | base64 | string join '' | string trim
+end
+
+function __codessh_complete_remote_windows_drives -a host prefix
+    set -l script "\$ErrorActionPreference = 'SilentlyContinue'; Get-PSDrive -PSProvider FileSystem | ForEach-Object { \$_.Name + ':/' }"
+    set -l encoded (__codessh_encode_powershell "$script")
+    test -n "$encoded"; or return 0
+
+    set -l ssh_args (__codessh_ssh_completion_args "$host")
+    set -l stem "$prefix"
+
+    command ssh $ssh_args powershell -NoProfile -NonInteractive -EncodedCommand "$encoded" 2>/dev/null |
+        while read -l drive
+            set drive (string trim -- "$drive")
+            test -n "$drive"; or continue
+            if test -n "$stem"
+                string match -qi -- "$stem*" "$drive"; or continue
+            end
+            printf '%s\tRemote drive\n' "$drive"
+        end
+end
+
+function __codessh_complete_remote_windows_paths -a host prefix
+    set -l dir ''
+    set -l stem ''
+    set -l normalized (string replace -a "\\" "/" -- "$prefix")
+
+    if test -z "$normalized"; or string match -qr '^[A-Za-z]$' -- "$normalized"
+        __codessh_complete_remote_windows_drives "$host" "$normalized"
+        return 0
+    end
+
+    if string match -qr '^[A-Za-z]:/?$' -- "$normalized"
+        set dir "$normalized"
+        if not string match -q '*/' -- "$dir"
+            set dir "$dir/"
+        end
+    else
+        set dir (string replace -r '/[^/]*$' '' -- "$normalized")
+        set stem (string replace -r '^.*/' '' -- "$normalized")
+        if string match -qr '^[A-Za-z]:$' -- "$dir"
+            set dir "$dir/"
+        end
+    end
+
+    test -n "$dir"; or return 0
+
+    set -l quoted_dir (__codessh_ps_quote "$dir")
+    set -l script "\$ErrorActionPreference = 'SilentlyContinue'; \$p = $quoted_dir; Get-ChildItem -LiteralPath \$p -Directory -Force | ForEach-Object { \$_.Name + '/' }"
+    set -l encoded (__codessh_encode_powershell "$script")
+    test -n "$encoded"; or return 0
+
+    set -l ssh_args (__codessh_ssh_completion_args "$host")
+    command ssh $ssh_args powershell -NoProfile -NonInteractive -EncodedCommand "$encoded" 2>/dev/null |
+        __codessh_emit_remote_dirs "$dir" "$stem" 'Remote directory'
+end
+
+function __codessh_complete_remote_paths -a host prefix
+    test -n "$host"; or return 0
+
+    if test -z "$prefix"
+        __codessh_complete_remote_windows_paths "$host" "$prefix"
+        __codessh_complete_remote_posix_paths "$host" "$prefix"
+        return 0
+    end
+
+    if string match -qr '^[A-Za-z]:' -- "$prefix"; or string match -qr '^[A-Za-z]$' -- "$prefix"
+        __codessh_complete_remote_windows_paths "$host" "$prefix"
+        return 0
+    end
+
+    __codessh_complete_remote_posix_paths "$host" "$prefix"
+end
+
 function codessh --description 'Open VS Code Remote SSH from fish'
+    if test (count $argv) -ge 1
+        switch $argv[1]
+            case --__complete-remote-paths
+                set -l host "$argv[2]"
+                set -l prefix "$argv[3]"
+                __codessh_complete_remote_paths "$host" "$prefix"
+                return 0
+        end
+    end
+
     set -l code_bin code
     set -l mode auto
     set -l dry_run 0
