@@ -35,6 +35,7 @@ if status is-interactive
     zoxide init fish | source
     command howlto --init | source
 
+    alias sshcode 'codessh'
     alias ht howlto
     alias pbc pbcopy
     alias pbp pbpaste
