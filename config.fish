@@ -75,7 +75,8 @@ if status is-interactive
     alias configd 'cd $__fish_config_dir'
     alias gdd gdu-diff
     alias cx codex
-    alias cxa 'codex app'
+    # alias cxa 'codex app'
+    alias cxa 'open -a ChatGPT .'
     alias cxapp 'codex app'
     alias up 'docker compose up'
     alias down 'docker compose down'
