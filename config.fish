@@ -36,6 +36,7 @@ if status is-interactive
     command howlto --init | source
 
     alias sshcode 'codessh'
+    alias brwe 'brew'
     alias ht 'howlto --'
     alias pbc pbcopy
     alias pbp pbpaste
