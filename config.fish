@@ -12,6 +12,13 @@ fish_add_path --path (brew --prefix e2fsprogs)/bin
 fish_add_path --path (brew --prefix e2fsprogs)/sbin
 fish_add_path --path (go env GOPATH)/bin
 
+set -gx ANDROID_HOME $HOME/Library/Android/sdk
+set -gx ANDROID_SDK_ROOT $ANDROID_HOME
+fish_add_path --path $ANDROID_HOME/platform-tools
+fish_add_path --path $ANDROID_HOME/emulator
+fish_add_path --path $ANDROID_HOME/cmdline-tools/latest/bin
+fish_add_path --path $ANDROID_HOME/build-tools/36.0.0
+
 set -gx JAVA_HOME /opt/homebrew/opt/openjdk
 set -gx CLASSPATH $JAVA_HOME/lib/tools.jar:$JAVA_HOME/lib/dt.jar:.
 fish_add_path --path $JAVA_HOME/bin
