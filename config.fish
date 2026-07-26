@@ -68,6 +68,7 @@ if status is-interactive
     alias dockert 'docker run --rm -it'
     alias dkt 'docker run --rm -it'
     alias dk docker
+    alias ldk lazydocker
     alias activate '. ./.venv/bin/activate.fish'
     alias rgs "command rg -S --max-columns 1000"
     alias rgl "command rg -S"
@@ -75,7 +76,6 @@ if status is-interactive
     alias sizeof 'du -d 0 -h'
     alias kg cargo
     alias del trash
-    # alias mp 'multipass'
     alias scpy scrcpy
     alias j just
     alias clr clear
@@ -90,7 +90,6 @@ if status is-interactive
     alias up 'docker compose up'
     alias down 'docker compose down'
     alias 7z '7zz'
-    alias voco 'vocotype'
 
     function rsbuild --description 'set cargo build target directory'
         set -l metadata (command cargo metadata --no-deps --format-version 1)
