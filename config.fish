@@ -186,19 +186,6 @@ if status is-interactive
     zoxide init fish | source
     alias cd "z"
     # }
-
-    # uv {
-    echo 'uv generate-shell-completion fish | source' > ~/.config/fish/completions/uv.fish
-    echo 'uvx --generate-shell-completion fish | source' > ~/.config/fish/completions/uvx.fish
-    # }
 end
 
 set -gx UV_DEFAULT_INDEX "https://pypi.tuna.tsinghua.edu.cn/simple"
-
-# --- apps ---
-
-# go {
-set -gx GOPATH "$HOME/.go"
-set -gx GOROOT "$HOME/.local/go"
-set -gx PATH "$GOROOT/bin:$GOPATH/bin:$PATH"
-# }
