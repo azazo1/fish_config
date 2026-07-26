@@ -3,11 +3,10 @@ fish_add_path --path "$HOME/scripts"
 
 if status is-interactive
     # Commands to run in interactive sessions can go here
-    alias ht 'howlto'
+    alias ht 'howlto --'
     alias update ". $__fish_config_dir/config.fish"
     alias config "nvim $__fish_config_dir/config.fish"
     alias vconfig "code $__fish_config_dir/config.fish"
-    alias mp "multipass"
     alias activate "source ./.venv/bin/activate.fish"
     alias pg 'ps aux | command rg '
     alias rgl "command rg -S"
@@ -20,6 +19,7 @@ if status is-interactive
     alias lg 'lazygit'
     alias kg 'cargo'
     alias lgnote 'lazygit -p ~/pjs/mynote'
+    alias lgn 'lazygit -p ~/pjs/mynote'
     alias configd 'cd $__fish_config_dir'
 
     fish_hybrid_key_bindings
