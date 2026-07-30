@@ -75,6 +75,7 @@ if status is-interactive
     alias cd z
     alias sizeof 'du -d 0 -h'
     alias kg cargo
+    alias kgr 'cargo run --'
     alias del trash
     alias scpy scrcpy
     alias j just
