@@ -421,7 +421,7 @@ if status is-interactive
     # command fzf --fish | source
 end
 
-test ! -e "$HOME/.x-cmd.root/local/data/fish/rc.fish" || source "$HOME/.x-cmd.root/local/data/fish/rc.fish" # boot up x-cmd.
+# test ! -e "$HOME/.x-cmd.root/local/data/fish/rc.fish" || source "$HOME/.x-cmd.root/local/data/fish/rc.fish" # boot up x-cmd.
 set -gx UV_DEFAULT_INDEX 'https://pypi.tuna.tsinghua.edu.cn/simple'
 # set -gx UV_LINK_MODE 'symlink' # 如果使用软连接的话, 清除 uv 的缓存可能会导致项目环境被破坏.
 
