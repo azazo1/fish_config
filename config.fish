@@ -92,6 +92,7 @@ if status is-interactive
     alias down 'docker compose down'
     alias 7z '7zz'
     alias g 'git'
+    alias cc 'claude'
 
     function rsbuild --description 'set cargo build target directory'
         set -l metadata (command cargo metadata --no-deps --format-version 1)
