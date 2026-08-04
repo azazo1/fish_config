@@ -1,27 +1,27 @@
 set -gx HOMEBREW_BREW_GIT_REMOTE "https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git"
 set -gx HOMEBREW_CORE_GIT_REMOTE "https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/homebrew-core.git"
 
-fish_add_path --path "$HOME/.local/bin"
-fish_add_path --path "$HOME/scripts"
-fish_add_path --path (brew --prefix)/sbin
-fish_add_path --path (brew --prefix)/bin
-fish_add_path --path (brew --prefix util-linux)/bin
-fish_add_path --path (brew --prefix util-linux)/sbin
-fish_add_path --path (python3 -m site --user-base)/bin
-fish_add_path --path (brew --prefix e2fsprogs)/bin
-fish_add_path --path (brew --prefix e2fsprogs)/sbin
-fish_add_path --path (go env GOPATH)/bin
+fish_add_path --path -p -m "$HOME/.local/bin"
+fish_add_path --path -p -m "$HOME/scripts"
+fish_add_path --path -p -m (brew --prefix)/sbin
+fish_add_path --path -p -m (brew --prefix)/bin
+fish_add_path --path -p -m (brew --prefix util-linux)/bin
+fish_add_path --path -p -m (brew --prefix util-linux)/sbin
+fish_add_path --path -p -m (python3 -m site --user-base)/bin
+fish_add_path --path -p -m (brew --prefix e2fsprogs)/bin
+fish_add_path --path -p -m (brew --prefix e2fsprogs)/sbin
+fish_add_path --path -p -m (go env GOPATH)/bin
 
 set -gx ANDROID_HOME $HOME/Library/Android/sdk
 set -gx ANDROID_SDK_ROOT $ANDROID_HOME
-fish_add_path --path $ANDROID_HOME/platform-tools
-fish_add_path --path $ANDROID_HOME/emulator
-fish_add_path --path $ANDROID_HOME/cmdline-tools/latest/bin
-fish_add_path --path $ANDROID_HOME/build-tools/36.0.0
+fish_add_path --path -p -m $ANDROID_HOME/platform-tools
+fish_add_path --path -p -m $ANDROID_HOME/emulator
+fish_add_path --path -p -m $ANDROID_HOME/cmdline-tools/latest/bin
+fish_add_path --path -p -m $ANDROID_HOME/build-tools/36.0.0
 
 set -gx JAVA_HOME /opt/homebrew/opt/openjdk
 set -gx CLASSPATH $JAVA_HOME/lib/tools.jar:$JAVA_HOME/lib/dt.jar:.
-fish_add_path --path $JAVA_HOME/bin
+fish_add_path --path -p -m $JAVA_HOME/bin
 
 set -gx FISH_DOTENV_FILE "$__fish_config_dir/.env.fish"
 set -gx RUSTC_WRAPPER sccache
@@ -431,7 +431,7 @@ set -gx UV_DEFAULT_INDEX 'https://pypi.tuna.tsinghua.edu.cn/simple'
 
 # bun {{{
 set --export BUN_INSTALL "$HOME/.bun"
-fish_add_path --path $BUN_INSTALL/bin
+fish_add_path --path -p -m $BUN_INSTALL/bin
 # }}}
 
 # set editor of this shell
