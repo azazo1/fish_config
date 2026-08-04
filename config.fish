@@ -31,6 +31,9 @@ set -gx NO_PROXY ".local,localhost,.tsinghua.edu.cn,.acodev.top,.wakatime.com"
 set -gx COPYFILE_DISABLE 1 # 禁止 tar 打包 ._* 这类的文件
 
 if status is-interactive
+    set -gx LANG zh_CN.UTF-8
+    set -gx LC_ALL zh_CN.UTF-8
+
     # Commands to run in interactive sessions can go here
     starship init fish | source
     if env | rg -q vscode
