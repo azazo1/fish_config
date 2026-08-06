@@ -88,7 +88,6 @@ if status is-interactive
     alias fdh 'fd -HI'
     alias configd 'cd $__fish_config_dir'
     alias gdd gdu-diff
-    alias cx codex
     # alias cxa 'codex app'
     alias cxa 'open -a ChatGPT .'
     alias cxapp 'codex app'
