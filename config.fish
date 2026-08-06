@@ -45,6 +45,9 @@ if status is-interactive
     zoxide init fish | source
     command howlto --init | source
 
+    alias lgconfig 'command lazygit -p ~/.config/fish'
+    alias agents 'nvim ~/.codex/AGENTS.md'
+    alias agnets 'nvim ~/.codex/AGENTS.md'
     alias rp 'realpath'
     alias d 'dust'
     alias sshcode 'codessh'
