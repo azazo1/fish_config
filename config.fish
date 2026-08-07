@@ -3,6 +3,7 @@ fish_add_path --path "$HOME/scripts"
 
 if status is-interactive
     # Commands to run in interactive sessions can go here
+    alias d 'dust'
     alias ht 'howlto --'
     alias update ". $__fish_config_dir/config.fish"
     alias config "nvim $__fish_config_dir/config.fish"
@@ -21,6 +22,8 @@ if status is-interactive
     alias lgnote 'lazygit -p ~/pjs/mynote'
     alias lgn 'lazygit -p ~/pjs/mynote'
     alias configd 'cd $__fish_config_dir'
+    alias j 'just'
+    alias pwsh "/mnt/c/'program files'/powershell/7/pwsh.exe"
 
     fish_hybrid_key_bindings
     # Delete every ctrl-m ctrl-p ctrl-n key bindings.
