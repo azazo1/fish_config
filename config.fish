@@ -46,8 +46,11 @@ if status is-interactive
     command howlto --init | source
 
     alias lgconfig 'command lazygit -p ~/.config/fish'
+    alias lgc 'command lazygit -p ~/.config/fish'
     alias agents 'nvim ~/.codex/AGENTS.md'
     alias agnets 'nvim ~/.codex/AGENTS.md'
+    alias agent 'nvim ~/.codex/AGENTS.md'
+    alias agnet 'nvim ~/.codex/AGENTS.md'
     alias rp 'realpath'
     alias d 'dust'
     alias sshcode 'codessh'
