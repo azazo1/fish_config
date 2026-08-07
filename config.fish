@@ -86,3 +86,4 @@ if status is-interactive
 end
 
 set -gx UV_DEFAULT_INDEX "https://pypi.tuna.tsinghua.edu.cn/simple"
+set -gx EDITOR 'nvim'
