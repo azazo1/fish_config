@@ -45,6 +45,7 @@ if status is-interactive
     zoxide init fish | source
     command howlto --init | source
 
+    alias bl 'bili'
     alias lga 'command lazygit -p ~/.config/codex'
     alias lgagent 'command lazygit -p ~/.config/codex'
     alias lgagents 'command lazygit -p ~/.config/codex'
