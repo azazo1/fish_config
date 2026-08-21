@@ -46,15 +46,28 @@ if status is-interactive
     command howlto --init | source
 
     alias bl 'bili'
+
+    alias lgd 'command lazygit -p ~/.config/dsh'
+    alias lgdsh 'command lazygit -p ~/.config/dsh'
+
     alias lga 'command lazygit -p ~/.config/codex'
     alias lgagent 'command lazygit -p ~/.config/codex'
     alias lgagents 'command lazygit -p ~/.config/codex'
+
     alias lgconfig 'command lazygit -p ~/.config/fish'
     alias lgc 'command lazygit -p ~/.config/fish'
+
+    alias ad 'nvim ~/.codex/AGENTS.md'
+    alias agents-dsh 'nvim ~/.codex/AGENTS.md'
+    alias agnets-dsh 'nvim ~/.codex/AGENTS.md'
+    alias agent-dsh 'nvim ~/.codex/AGENTS.md'
+    alias agnet-dsh 'nvim ~/.codex/AGENTS.md'
+
     alias agents 'nvim ~/.codex/AGENTS.md'
     alias agnets 'nvim ~/.codex/AGENTS.md'
     alias agent 'nvim ~/.codex/AGENTS.md'
     alias agnet 'nvim ~/.codex/AGENTS.md'
+
     alias rp 'realpath'
     alias d 'dust'
     alias sshcode 'codessh'
