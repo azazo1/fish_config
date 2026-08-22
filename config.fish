@@ -47,8 +47,8 @@ if status is-interactive
 
     alias bl 'bili'
 
-    alias lgd 'command lazygit -p ~/.config/dsh'
-    alias lgdsh 'command lazygit -p ~/.config/dsh'
+    alias lgd 'command lazygit -p ~/.dsh'
+    alias lgdsh 'command lazygit -p ~/.dsh'
 
     alias lga 'command lazygit -p ~/.config/codex'
     alias lgagent 'command lazygit -p ~/.config/codex'
