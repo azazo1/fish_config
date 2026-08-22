@@ -57,11 +57,11 @@ if status is-interactive
     alias lgconfig 'command lazygit -p ~/.config/fish'
     alias lgc 'command lazygit -p ~/.config/fish'
 
-    alias ad 'nvim ~/.codex/AGENTS.md'
-    alias agents-dsh 'nvim ~/.codex/AGENTS.md'
-    alias agnets-dsh 'nvim ~/.codex/AGENTS.md'
-    alias agent-dsh 'nvim ~/.codex/AGENTS.md'
-    alias agnet-dsh 'nvim ~/.codex/AGENTS.md'
+    alias ad 'nvim ~/.dsh/AGENTS.md'
+    alias agents-dsh 'nvim ~/.dsh/AGENTS.md'
+    alias agnets-dsh 'nvim ~/.dsh/AGENTS.md'
+    alias agent-dsh 'nvim ~/.dsh/AGENTS.md'
+    alias agnet-dsh 'nvim ~/.dsh/AGENTS.md'
 
     alias agents 'nvim ~/.codex/AGENTS.md'
     alias agnets 'nvim ~/.codex/AGENTS.md'
