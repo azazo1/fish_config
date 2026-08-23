@@ -18,6 +18,45 @@ function __dsh_profiles
     end
 end
 
+# Return direct package names for the profile selected by --profile.
+function __dsh_plugin_packages
+    set -l words (commandline -opc)
+    set -l profile
+    set -l profile_next 0
+    for word in $words
+        if test $profile_next = 1
+            set profile $word
+            set profile_next 0
+        else if test "$word" = --profile
+            set profile_next 1
+        else if string match -q -- '--profile=*' "$word"
+            set profile (string split -m 1 = "$word")[2]
+        end
+    end
+    if test -z "$profile"
+        return
+    end
+
+    set -l dsh_home $DSH_HOME
+    if test -z "$dsh_home"
+        set dsh_home ~/.dsh
+    end
+    set -l profile_dir "$dsh_home/profiles/$profile"
+    if not test -d "$profile_dir"
+        return
+    end
+
+    node -e '
+        const fs = require("fs")
+        try {
+            const packageJson = JSON.parse(fs.readFileSync(process.argv[1], "utf8"))
+            const names = new Set()
+            for (const name of Object.keys(packageJson.dependencies || {})) names.add(name)
+            process.stdout.write([...names].sort().join("\\n"))
+        } catch {}
+    ' "$profile_dir/package.json"
+end
+
 # Launcher options for the default profile mode.
 complete -c dsh -f -n '__fish_use_subcommand; and not __fish_seen_argument --' -s V -l version -d '输出版本并退出'
 complete -c dsh -f -n '__fish_use_subcommand; and not __fish_seen_argument --' -l profile -r -a '(__dsh_profiles)' -d '选择要启动的 profile'
@@ -49,6 +88,7 @@ complete -c dsh -f -n '__fish_seen_subcommand_from plugin; and not __fish_seen_a
 # Common pnpm verbs forwarded by dsh plugin.
 set -l dsh_pnpm_commands add install i remove rm un uninstall update up why list ls la ll run exec dlx create link unlink rebuild outdated audit pack publish prune root bin init config store recursive help
 complete -c dsh -f -n '__fish_seen_subcommand_from plugin; and not __fish_seen_subcommand_from add install i remove rm un uninstall update up why list ls la ll run exec dlx create link unlink rebuild outdated audit pack publish prune root bin init config store recursive help; and not __fish_seen_argument --' -a "$dsh_pnpm_commands"
+complete -c dsh -f -n '__fish_seen_subcommand_from remove rm un uninstall; and not __fish_seen_argument --' -a '(__dsh_plugin_packages)' -d '已安装的 profile 依赖'
 
 # Common pnpm options after a forwarded command. Keep them lightweight because
 # the exact option set depends on the selected pnpm subcommand.
