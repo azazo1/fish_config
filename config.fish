@@ -26,7 +26,7 @@ fish_add_path --path -p -m $JAVA_HOME/bin
 set -gx FISH_DOTENV_FILE "$__fish_config_dir/.env.fish"
 set -gx RUSTC_WRAPPER sccache
 
-set -gx NO_PROXY ".local,localhost,.tsinghua.edu.cn,.acodev.top,.wakatime.com"
+set -gx NO_PROXY "127.0.0.1,.local,localhost,.tsinghua.edu.cn,.acodev.top,.wakatime.com"
 
 set -gx COPYFILE_DISABLE 1 # 禁止 tar 打包 ._* 这类的文件
 
