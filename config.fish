@@ -45,6 +45,8 @@ if status is-interactive
     zoxide init fish | source
     command howlto --init | source
 
+    alias comd 'diary-commit'
+
     alias bl 'bili'
 
     alias lgd 'command lazygit -p ~/.dsh'
