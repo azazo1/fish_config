@@ -45,8 +45,9 @@ if status is-interactive
     zoxide init fish | source
     command howlto --init | source
 
+    alias dpd 'rg --pretty --color never .' # dump dir 将目录转成文本表达, 方便提供给网页大模型.
+    alias jr 'just run'
     alias comd 'diary-commit'
-
     alias bl 'bili'
 
     alias lgd 'command lazygit -p ~/.dsh'
