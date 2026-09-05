@@ -45,7 +45,6 @@ if status is-interactive
     zoxide init fish | source
     command howlto --init | source
 
-    alias dpd 'rg --pretty --color never .' # dump dir 将目录转成文本表达, 方便提供给网页大模型.
     alias jr 'just run'
     alias comd 'diary-commit'
     alias bl 'bili'
@@ -448,7 +447,21 @@ if status is-interactive
         command launchctl list | command rg $domain
     end
 
-    # command fzf --fish | source
+    function dpg --description 'dump git 将 git 变化输出, 方便给大模型.'
+        set -lx GIT_PAGER cat
+        if test (count $argv) -ge 1
+            git diff $argv[1]
+        else
+            echo "=== staged ==="
+            git diff --cached
+            echo "=== unstaged ==="
+            git diff
+        end
+    end
+
+    function dpd --description 'dump dir 将目录转成文本表达, 方便给大模型.'
+        rg --pretty --color never . 
+    end
 end
 
 # test ! -e "$HOME/.x-cmd.root/local/data/fish/rc.fish" || source "$HOME/.x-cmd.root/local/data/fish/rc.fish" # boot up x-cmd.
