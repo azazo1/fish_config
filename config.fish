@@ -461,10 +461,3 @@ fish_add_path --path -p -m $BUN_INSTALL/bin
 if test -f "$(which nvim)"
     set -gx EDITOR nvim
 end
-
-# pnpm
-set -gx PNPM_HOME "/Users/azazo1/Library/pnpm"
-if not string match -q -- "$PNPM_HOME/bin" $PATH
-  set -gx PATH "$PNPM_HOME/bin" $PATH
-end
-# pnpm end
