@@ -337,7 +337,7 @@ if status is-interactive
         end
         set -gx HTTPS_PROXY $proxy_base
         set -gx HTTP_PROXY $proxy_base
-        echo "Proxy on $proxy_base set"
+        echo "Proxy on $proxy_base set" 1>&2
     end
 
     function setproxyp
@@ -347,13 +347,13 @@ if status is-interactive
         end
         set -gx HTTPS_PROXY http://$proxy_base
         set -gx HTTP_PROXY http://$proxy_base
-        echo "Proxy on http://$proxy_base set"
+        echo "Proxy on http://$proxy_base set" 1>&2
     end
 
     function unsetproxy
         set -e HTTPS_PROXY
         set -e HTTP_PROXY
-        echo "Proxy unset"
+        echo "Proxy unset" 1>&2
     end
 
     # 直接启用代理
