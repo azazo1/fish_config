@@ -10,17 +10,17 @@ if status is-interactive
     alias vconfig "code $__fish_config_dir/config.fish"
     alias activate "source ./.venv/bin/activate.fish"
     alias pg 'ps aux | command rg '
-    alias rgl "command rg -S"
-    alias dkt 'docker run -v tmpapp:/app --rm -it'
     alias ll 'ls -lha'
     alias l 'ls'
     alias sl 'ls'
     alias lzd 'lazydocker'
     alias dk 'docker'
     alias lg 'lazygit'
-    alias kg 'cargo'
-    alias lgnote 'lazygit -p ~/pjs/mynote'
+    alias lgc 'lazygit -p ~/.config/fish'
+    alias lgd 'lazygit -p ~/.dsh'
     alias lgn 'lazygit -p ~/pjs/mynote'
+    alias lgnote 'lazygit -p ~/pjs/mynote'
+    alias kg 'cargo'
     alias configd 'cd $__fish_config_dir'
     alias j 'just'
     alias pwsh "/mnt/c/'program files'/powershell/7/pwsh.exe"
