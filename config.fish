@@ -45,7 +45,6 @@ if status is-interactive
     zoxide init fish | source
     command howlto --init | source
 
-    alias dli 'dsh --profile headless'
     alias jr 'just run'
     alias comd 'diary-commit'
     alias bl 'bili'
@@ -54,17 +53,9 @@ if status is-interactive
     alias lgdsh 'command lazygit -p ~/.dsh'
 
     alias lga 'command lazygit -p ~/.config/codex'
-    alias lgagent 'command lazygit -p ~/.config/codex'
-    alias lgagents 'command lazygit -p ~/.config/codex'
-
-    alias lgconfig 'command lazygit -p ~/.config/fish'
     alias lgc 'command lazygit -p ~/.config/fish'
 
     alias ad 'nvim ~/.dsh/AGENTS.md'
-    alias agents-dsh 'nvim ~/.dsh/AGENTS.md'
-    alias agnets-dsh 'nvim ~/.dsh/AGENTS.md'
-    alias agent-dsh 'nvim ~/.dsh/AGENTS.md'
-    alias agnet-dsh 'nvim ~/.dsh/AGENTS.md'
 
     alias agents 'nvim ~/.codex/AGENTS.md'
     alias agnets 'nvim ~/.codex/AGENTS.md'
