@@ -45,6 +45,7 @@ if status is-interactive
     zoxide init fish | source
     command howlto --init | source
 
+    alias wsl 'ssh wsl'
     alias jr 'just run'
     alias comd 'diary-commit'
     alias bl 'bili'
