@@ -1,1 +1,3 @@
-uvx --generate-shell-completion fish | source
+if command -q uvx
+    command uvx --generate-shell-completion fish | source
+end

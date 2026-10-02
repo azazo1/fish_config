@@ -1,4 +1,5 @@
 function dpr --description "dump repo to agent"
+    __require_cmds dpr git; or return
     if not git rev-parse --is-inside-work-tree >/dev/null 2>&1
         echo "Error: Not inside a git repository." >&2
         return 1
