@@ -40,10 +40,6 @@ if status is-interactive
     bind --user -s -M insert super-l accept-autosuggestion
     bind --user -s -M insert ctrl-j accept-autosuggestion
 
-    if test -f "$__fish_config_dir/.env.fish"
-        load_dotenv "$__fish_config_dir/.env.fish"
-    end
-
     function y
         set tmp (mktemp -t "yazi-cwd.XXXXXX")
         command yazi $argv --cwd-file="$tmp"
@@ -91,6 +87,10 @@ if status is-interactive
         alias cd "z"
     end
     # }
+
+    if test -f "$__fish_config_dir/.env.fish"
+        load_dotenv "$__fish_config_dir/.env.fish"
+    end
 end
 
 set -gx UV_DEFAULT_INDEX "https://pypi.tuna.tsinghua.edu.cn/simple"
