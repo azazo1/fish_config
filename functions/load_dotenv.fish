@@ -3,6 +3,9 @@ function load_dotenv --description "load .env file of current dir"
     if test (count $argv) -ge 1
         set env_file $argv[1]
     end
+    if not test -f $env_file
+        return 0
+    end
     # First shell out to source the file in an isolated fashion. This is to
     # ensure "atomicity" where either all settings as sourced or none at all.
     if ! fish --private --no-config --command="source $env_file"

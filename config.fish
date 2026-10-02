@@ -40,19 +40,23 @@ if status is-interactive
     bind --user -s -M insert super-l accept-autosuggestion
     bind --user -s -M insert ctrl-j accept-autosuggestion
 
-    load_dotenv "$__fish_config_dir/.env.fish"
+    if test -f "$__fish_config_dir/.env.fish"
+        load_dotenv "$__fish_config_dir/.env.fish"
+    end
 
     function y
         set tmp (mktemp -t "yazi-cwd.XXXXXX")
         command yazi $argv --cwd-file="$tmp"
         if read -z cwd < "$tmp"; and [ -n "$cwd" ]; and [ "$cwd" != "$PWD" ]
-            z -- "$cwd"
+            cd -- "$cwd"
         end
         command rm -f -- "$tmp"
     end
     alias yazi 'y'
 
-    complete -c tmp -a '(fd . --max-depth 1 -t d ~/tmp -x basename)' -f
+    if command -q fd
+        complete -c tmp -a '(fd . --max-depth 1 -t d ~/tmp -x basename)' -f
+    end
 
     set -g PROXY_BASE "localhost:7890"
     function setproxy
@@ -76,12 +80,16 @@ if status is-interactive
     # --- apps ---
 
     # starship {
-    starship init fish | source
+    if command -q starship
+        starship init fish | source
+    end
     # }
 
     # zoxide {
-    zoxide init fish | source
-    alias cd "z"
+    if command -q zoxide
+        zoxide init fish | source
+        alias cd "z"
+    end
     # }
 end
 
