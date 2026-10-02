@@ -75,4 +75,6 @@ alias scpy scrcpy
 alias sshcode codessh
 alias comd diary-commit
 alias mynote 'code ~/pjs/mynote'
+alias splay sound-play
+alias sp sound-play
 # }
