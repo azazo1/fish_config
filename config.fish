@@ -1,97 +1,30 @@
-fish_add_path --path "$HOME/.local/bin"
-fish_add_path --path "$HOME/scripts"
+# fish 配置入口, macos 和 main(linux) 两个分支共用同一份.
+#
+# 加载顺序:
+#   conf.d/*.fish         fish 自动加载, 放第三方工具注入 (rustup, uv, ...)
+#   init/env.fish         通用环境变量与基础 PATH
+#   init/platform.fish    平台专属配置, 两个分支内容不同
+#   init/tools.fish       依赖完整 PATH 的工具配置
+#   ---- 以下仅交互式 ----
+#   init/interactive.fish starship, zoxide 等初始化
+#   init/aliases.fish     通用别名
+#   init/key-bindings.fish
+#   load_dotenv           最后加载 .env.fish, 本机私有配置可覆盖前面所有设置
+#
+# 函数放在 functions/ 下按需自动加载, 补全放在 completions/ 下.
+
+set -l init_dir "$__fish_config_dir/init"
+
+source "$init_dir/env.fish"
+if test -f "$init_dir/platform.fish"
+    source "$init_dir/platform.fish"
+end
+source "$init_dir/tools.fish"
 
 if status is-interactive
-    # Commands to run in interactive sessions can go here
-    alias d 'dust'
-    alias ht 'howlto --'
-    alias update ". $__fish_config_dir/config.fish"
-    alias config "nvim $__fish_config_dir/config.fish"
-    alias vconfig "code $__fish_config_dir/config.fish"
-    alias activate "source ./.venv/bin/activate.fish"
-    alias pg 'ps aux | command rg '
-    alias ll 'ls -lha'
-    alias l 'ls'
-    alias sl 'ls'
-    alias lzd 'lazydocker'
-    alias dk 'docker'
-    alias lg 'lazygit'
-    alias lgc 'lazygit -p ~/.config/fish'
-    alias lgd 'lazygit -p ~/.dsh'
-    alias lgn 'lazygit -p ~/pjs/mynote'
-    alias lgnote 'lazygit -p ~/pjs/mynote'
-    alias kg 'cargo'
-    alias configd 'cd $__fish_config_dir'
-    alias j 'just'
-    alias pwsh "/mnt/c/'program files'/powershell/7/pwsh.exe"
+    source "$init_dir/interactive.fish"
+    source "$init_dir/aliases.fish"
+    source "$init_dir/key-bindings.fish"
 
-    fish_hybrid_key_bindings
-    # Delete every ctrl-m ctrl-p ctrl-n key bindings.
-    bind -e --preset -M insert ctrl-p ctrl-n
-    bind -e --preset -M visual ctrl-p ctrl-n
-    bind -e --preset ctrl-l
-    bind -e --preset -M visual ctrl-l
-    bind -e --preset -M insert ctrl-l
-
-    bind --user -M insert ctrl-p up-or-search
-    bind --user -M visual ctrl-p up-or-search
-    bind --user -M insert ctrl-n down-or-search
-    bind --user -M visual ctrl-n down-or-search
-    bind --user -s -M insert super-l accept-autosuggestion
-    bind --user -s -M insert ctrl-j accept-autosuggestion
-
-    function y
-        set tmp (mktemp -t "yazi-cwd.XXXXXX")
-        command yazi $argv --cwd-file="$tmp"
-        if read -z cwd < "$tmp"; and [ -n "$cwd" ]; and [ "$cwd" != "$PWD" ]
-            cd -- "$cwd"
-        end
-        command rm -f -- "$tmp"
-    end
-    alias yazi 'y'
-
-    if command -q fd
-        complete -c tmp -a '(fd . --max-depth 1 -t d ~/tmp -x basename)' -f
-    end
-
-    set -g PROXY_BASE "localhost:7890"
-    function setproxy
-        set -gx HTTPS_PROXY $PROXY_BASE
-        set -gx HTTP_PROXY $PROXY_BASE
-        echo "Proxy on $PROXY_BASE set"
-    end
-
-    function setproxyp
-        set -gx HTTPS_PROXY "http://$PROXY_BASE"
-        set -gx HTTP_PROXY "http://$PROXY_BASE"
-        echo "Proxy on http://$PROXY_BASE set"
-    end
-
-    function unsetproxy
-        set -e HTTPS_PROXY
-        set -e HTTP_PROXY
-        echo "Proxy unset"
-    end
-
-    # --- apps ---
-
-    # starship {
-    if command -q starship
-        starship init fish | source
-    end
-    # }
-
-    # zoxide {
-    if command -q zoxide
-        zoxide init fish | source
-        alias cd "z"
-    end
-    # }
-
-    if test -f "$__fish_config_dir/.env.fish"
-        load_dotenv "$__fish_config_dir/.env.fish"
-    end
+    load_dotenv $FISH_DOTENV_FILE
 end
-
-set -gx UV_DEFAULT_INDEX "https://pypi.tuna.tsinghua.edu.cn/simple"
-set -gx EDITOR 'nvim'
