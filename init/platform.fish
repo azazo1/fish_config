@@ -68,6 +68,7 @@ if status is-interactive
     alias cxapp 'codex app'
     alias rsdir rsbuild
     alias wsl 'ssh wsl'
+    alias win 'ssh win'
     if command -q 7zz
         alias 7z 7zz
     end
