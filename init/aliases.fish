@@ -66,6 +66,7 @@ alias uvpy 'uv run python'
 alias activate '. ./.venv/bin/activate.fish'
 alias cc claude
 alias ht 'howlto --'
+alias dsho dsh-open
 # }
 
 # 其他 {
