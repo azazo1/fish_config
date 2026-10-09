@@ -26,7 +26,7 @@ _HERE = Path(__file__).resolve().parent if "__file__" in globals() \
 _PROMPT_FILE = _HERE / "amd_prompt.txt"
 _SKILLS_DIR = Path.home() / ".dsh" / "skills"
 # 默认用 bash 执行 run/sh; 找不到时回退到 $SHELL, 再回退 /bin/sh.
-# 注意: fish 语法与 POSIX 不兼容, 所以不直接用 $SHELL.
+# bash 是 run/sh 的默认解释器.
 _BASH = shutil.which("bash") or ("/bin/bash" if os.path.exists("/bin/bash") else None)
 _SHELL = _BASH or os.environ.get("SHELL") or "/bin/sh"
 
@@ -159,7 +159,7 @@ def _run_shell(cmd, sandbox=False, shell=None):
 def sh(cmd, sandbox=False, shell=None):
     """执行 shell 命令, 返回 stdout+stderr 文本 (不写剪贴板).
 
-    默认用 bash 执行; shell="fish" 等可覆盖.
+    默认用 bash 执行; shell= 可覆盖解释器.
     sandbox=True 时在只读沙箱里执行 (Linux: bwrap, macOS: sandbox-exec).
     """
     return _run_shell(cmd, sandbox=sandbox, shell=shell)[1]
@@ -168,7 +168,7 @@ def sh(cmd, sandbox=False, shell=None):
 def run(cmd, sandbox=False, shell=None):
     """执行 shell 命令, 把 stdout+stderr 通过 OSC 52 复制到剪贴板.
 
-    默认用 bash 执行 (不与 fish 语法兼容), shell= 可覆盖.
+    默认用 bash 执行, shell= 可覆盖解释器.
 
     sandbox=True 时在只读沙箱里执行:
       - Linux: bwrap (bubblewrap), 根文件系统 --ro-bind / / 只读
