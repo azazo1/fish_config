@@ -9,6 +9,48 @@ function amd --description '生成设备探索 agent 提示词并复制到系统
         printf "\e]52;c;%s\a" $p > /dev/tty
     end
 
+    # 自动发现 ~/.dsh/skills 下的技能 (读取 SKILL.md frontmatter 的 name/description)
+    set -l skills_dir ~/.dsh/skills
+    set -l skill_lines
+    if test -d $skills_dir
+        for sdir in $skills_dir/*
+            test -d $sdir; or continue
+            set -l smd $sdir/SKILL.md
+            test -f $smd; or continue
+            set -l sname
+            set -l sdesc
+            set -l in_fm 0
+            while read -l sline
+                if test $in_fm -eq 0
+                    if test "$sline" = "---"
+                        set in_fm 1
+                    end
+                    continue
+                end
+                if test "$sline" = "---"
+                    break
+                end
+                if test -z "$sname"
+                    if string match -qr "^name:" -- $sline
+                        set sname (string replace -r "^name:[[:space:]]*" "" -- $sline)
+                    end
+                end
+                if test -z "$sdesc"
+                    if string match -qr "^description:" -- $sline
+                        set sdesc (string replace -r "^description:[[:space:]]*" "" -- $sline)
+                    end
+                end
+            end < $smd
+            if test -z "$sname"
+                set sname (basename (string trim -r -c / -- $sdir))
+            end
+            if test -n "$sdesc"
+                set -a skill_lines "- $sname: $sdesc"
+            else
+                set -a skill_lines "- $sname"
+            end
+        end
+    end
     set -l prompt \
         "当前工作目录: $cwd" \
         '' \
@@ -44,6 +86,12 @@ function amd --description '生成设备探索 agent 提示词并复制到系统
         '推荐 python3 -c 内联脚本做替换, 幂等可重跑.' \
         '脚本里用 chr(92) chr(10) chr(39) 生成反斜杠/换行/单引号,' \
         '避开 fish 单引号里的转义问题.' \
+        '' \
+        '# 可用技能 skills' \
+        '' \
+        '以下技能由 ~/.dsh/skills 自动发现, 任务匹配时读取 ~/.dsh/skills/<name>/SKILL.md 获取完整流程:' \
+        '' \
+        $skill_lines \
         '' \
         '# 任务' \
         '' \
