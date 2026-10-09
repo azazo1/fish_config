@@ -8,9 +8,13 @@
 
 预定义函数 (已在 REPL 中加载, 直接用):
 
-    run(cmd)         # 执行 shell 命令字符串, 结果(含 stderr)复制到剪贴板
-    osc_copy(text)   # 把任意文本复制到剪贴板, 不执行命令
-    sh(cmd)          # 执行 shell 命令, 返回文本 (仅本地调试, 不复制到剪贴板)
+    run(cmd, sandbox=False)   # 执行 shell 命令字符串, 结果(含 stderr)复制到剪贴板
+                              # sandbox=True: 只读沙箱内执行
+                              #   Linux -> bwrap (bubblewrap)
+                              #   macOS -> sandbox-exec (seatbelt)
+    osc_copy(text)            # 把任意文本复制到剪贴板, 不执行命令
+    sh(cmd, sandbox=False)    # 执行 shell 命令, 返回文本 (仅本地调试, 不复制到剪贴板)
+    sandbox_available()       # 当前平台是否具备只读沙箱能力 (bool)
 
 之后所有需要读取输出的操作都写成 Python 代码块, 例如:
 
@@ -23,6 +27,19 @@
     ls -la
     uname -a
     """)
+
+# 只读沙箱
+
+run(cmd, sandbox=True) / sh(cmd, sandbox=True) 会在只读沙箱里执行命令:
+  - Linux: bwrap (bubblewrap), --ro-bind / / 把根文件系统只读挂载,
+           /tmp 与 /run 换成临时 tmpfs, --unshare-pid --die-with-parent
+  - macOS: sandbox-exec + seatbelt profile, deny file-write*,
+           仅放行 /dev 与临时目录 (/tmp, /private/var/folders 等)
+
+适合: 只读探索, 审计不可信脚本, 防止误写误删.
+不适合: 需要写文件或持久化到 /tmp 之外的命令, 请用 sandbox=False.
+
+sandbox_available() 返回当前平台是否可用; 不可用时 run(sandbox=True) 抛 RuntimeError.
 
 # 要求
 每次都只能发送一个代码块, 用户执行之后返回剪贴板内容给你.
