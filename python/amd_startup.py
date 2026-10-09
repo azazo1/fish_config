@@ -2,9 +2,10 @@
 """amd 的 Python REPL 启动脚本.
 
 由 amd.fish 通过 PYTHONSTARTUP 加载. 职责:
-  1. 在 REPL 里定义 run / sh / osc_copy
-  2. 读取同目录的 amd_prompt.txt, 填充 cwd 和 skills
-  3. 通过 OSC 52 把提示词复制到系统剪贴板
+  1. 在 REPL 里定义 run / sh / osc_copy  (给 agent 用, 输出走剪贴板)
+  2. 定义 ls / cat / cd / ...             (给用户用, 输出直接可见)
+  3. 读取同目录的 amd_prompt.txt, 填充 cwd 和 skills
+  4. 通过 OSC 52 把提示词复制到系统剪贴板
 
 仅交互式 REPL 会触发 (PYTHONSTARTUP 语义), 不影响 python3 script.py.
 """
@@ -13,6 +14,7 @@ from __future__ import annotations
 import base64
 import os
 import re
+import shlex
 import subprocess
 import sys
 from pathlib import Path
@@ -24,8 +26,18 @@ _PROMPT_FILE = _HERE / "amd_prompt.txt"
 _SKILLS_DIR = Path.home() / ".dsh" / "skills"
 _SHELL = os.environ.get("SHELL") or "/bin/sh"
 
-__all__ = ["run", "sh", "osc_copy", "build_prompt"]
+__all__ = [
+    # agent 用
+    "run", "sh", "osc_copy", "build_prompt",
+    # 用户用
+    "term", "ls", "cd", "pwd", "cat", "grep", "find", "which",
+    "head", "tail", "wc", "tree", "echo", "mkdir", "touch",
+    "rm", "cp", "mv",
+]
 
+# ---------------------------------------------------------------------------
+# agent 用: 输出走剪贴板
+# ---------------------------------------------------------------------------
 
 def osc_copy(text) -> None:
     """通过 OSC 52 把 text 复制到系统剪贴板 (str 或 bytes)."""
@@ -37,13 +49,16 @@ def osc_copy(text) -> None:
         data = str(text).encode("utf-8")
     payload = base64.b64encode(data).decode("ascii")
     seq = "\x1b]52;c;%s\x07" % payload
+
     try:
         with open("/dev/tty", "w", encoding="ascii") as tty:
             tty.write(seq)
             tty.flush()
+        return
     except OSError:
-        sys.stdout.write(seq)
-        sys.stdout.flush()
+        pass
+    sys.stderr.write(seq)
+    sys.stderr.flush()
 
 
 def _run_shell(cmd):
@@ -71,6 +86,111 @@ def run(cmd):
     print("[amd] returncode=%d, copied %d bytes to clipboard" % (rc, len(text)))
     return rc, text
 
+# ---------------------------------------------------------------------------
+# 用户用: 输出直接可见 (继承 tty)
+# ---------------------------------------------------------------------------
+
+def _term(cmd):
+    """在终端里直接执行 shell 命令, 继承 tty, 返回 returncode."""
+    try:
+        return subprocess.run([_SHELL, "-c", cmd]).returncode
+    except FileNotFoundError:
+        print("[amd] 找不到 shell: %s" % _SHELL, file=sys.stderr)
+        return 127
+
+
+def _join(name, args):
+    return " ".join([name] + [shlex.quote(str(a)) for a in args])
+
+
+def term(cmd):
+    """term("任意 shell 命令") — 在终端里直接执行, 输出可见."""
+    return _term(cmd)
+
+
+def ls(*args):
+    """ls [args] — 直接在终端列出目录."""
+    return _term(_join("ls", args))
+
+
+def cat(*args):
+    """cat file... — 直接在终端打印文件."""
+    return _term(_join("cat", args))
+
+
+def grep(*args):
+    return _term(_join("grep", args))
+
+
+def find(*args):
+    return _term(_join("find", args))
+
+
+def which(cmd):
+    return _term(_join("which", [cmd]))
+
+
+def head(*args):
+    return _term(_join("head", args))
+
+
+def tail(*args):
+    return _term(_join("tail", args))
+
+
+def wc(*args):
+    return _term(_join("wc", args))
+
+
+def tree(*args):
+    return _term(_join("tree", args))
+
+
+def echo(*args):
+    return _term(_join("echo", args))
+
+
+def mkdir(*args):
+    return _term(_join("mkdir", args))
+
+
+def touch(*args):
+    return _term(_join("touch", args))
+
+
+def rm(*args):
+    return _term(_join("rm", args))
+
+
+def cp(*args):
+    return _term(_join("cp", args))
+
+
+def mv(*args):
+    return _term(_join("mv", args))
+
+
+def pwd():
+    """打印当前 Python 进程的工作目录 (与 run() 一致)."""
+    print(os.getcwd())
+
+
+def cd(path="~"):
+    """cd [path] — 改变 Python 进程的工作目录, 影响 run()/pwd()/ls().
+
+    这是真的 os.chdir, 不是起子 shell, 所以之后 run() 也在新目录里跑.
+    """
+    p = os.path.expanduser(str(path))
+    try:
+        os.chdir(p)
+    except OSError as e:
+        print("[amd] cd 失败: %s" % e, file=sys.stderr)
+        return
+    print(os.getcwd())
+
+# ---------------------------------------------------------------------------
+# 提示词构建
+# ---------------------------------------------------------------------------
 
 _FM_RE = re.compile(r"^(name|description):[ \t]*(.*)$")
 
@@ -129,7 +249,9 @@ def _bootstrap():
         return
     osc_copy(text)
     print("[amd] Python REPL ready. 提示词已复制到剪贴板.")
-    print("[amd] 已定义: run(cmd), sh(cmd), osc_copy(text), build_prompt()")
+    print("[amd] agent 用:  run(cmd)  sh(cmd)  osc_copy(text)")
+    print("[amd] 用户用:    ls(*a)  cat(*f)  cd(path)  pwd()  grep(*a)"
+          "  find(*a)  which(c)  head/tail/wc(*a)  tree(*a)  term(cmd)")
 
 
 if __name__ == "__main__":
