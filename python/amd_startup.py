@@ -15,6 +15,7 @@ import base64
 import os
 import re
 import shlex
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -26,9 +27,82 @@ _PROMPT_FILE = _HERE / "amd_prompt.txt"
 _SKILLS_DIR = Path.home() / ".dsh" / "skills"
 _SHELL = os.environ.get("SHELL") or "/bin/sh"
 
+# ---------------------------------------------------------------------------
+# 平台检测 & 只读沙箱
+# ---------------------------------------------------------------------------
+
+_IS_MACOS = sys.platform == "darwin"
+_IS_LINUX = sys.platform.startswith("linux")
+
+_BWRAP = shutil.which("bwrap")
+_SANDBOX_EXEC = shutil.which("sandbox-exec")
+
+_SEATBELT_RO_PROFILE = """(version 1)
+(allow default)
+(deny file-write*)
+(allow file-write*
+    (subpath "/dev")
+    (subpath "/tmp")
+    (subpath "/private/tmp")
+    (subpath "/private/var/tmp")
+    (subpath "/private/var/folders"))
+"""
+
+
+def sandbox_available():
+    """当前平台是否具备只读沙箱能力."""
+    if _IS_MACOS:
+        return _SANDBOX_EXEC is not None
+    if _IS_LINUX:
+        return _BWRAP is not None
+    return False
+
+
+def sandbox_kind():
+    """返回人类可读的沙箱后端描述."""
+    if _IS_MACOS:
+        return ("seatbelt (sandbox-exec)" if _SANDBOX_EXEC
+                else "unavailable (sandbox-exec missing)")
+    if _IS_LINUX:
+        return ("bwrap (bubblewrap)" if _BWRAP
+                else "unavailable (bwrap missing)")
+    return "unsupported platform: %s" % sys.platform
+
+
+def _wrap_sandbox(argv):
+    """把完整命令 argv (list) 包进只读沙箱, 返回新的 argv."""
+    if _IS_MACOS:
+        if not _SANDBOX_EXEC:
+            raise RuntimeError(
+                "macOS 只读沙箱需要 sandbox-exec, 但未找到. "
+                "请安装 Xcode Command Line Tools, 或改用 sandbox=False."
+            )
+        return [_SANDBOX_EXEC, "-p", _SEATBELT_RO_PROFILE, *argv]
+    if _IS_LINUX:
+        if not _BWRAP:
+            raise RuntimeError(
+                "Linux 只读沙箱需要 bwrap (bubblewrap), 但未找到. "
+                "请安装 bubblewrap, 或改用 sandbox=False."
+            )
+        return [
+            _BWRAP,
+            "--ro-bind", "/", "/",
+            "--dev", "/dev",
+            "--proc", "/proc",
+            "--tmpfs", "/tmp",
+            "--tmpfs", "/run",
+            "--unshare-pid",
+            "--die-with-parent",
+            "--",
+            *argv,
+        ]
+    raise RuntimeError("当前平台不支持沙箱: %s" % sys.platform)
+
+
 __all__ = [
     # agent 用
     "run", "sh", "osc_copy", "build_prompt",
+    "sandbox_available", "sandbox_kind",
     # 用户用
     "term", "ls", "cd", "pwd", "cat", "grep", "find", "which",
     "head", "tail", "wc", "tree", "echo", "mkdir", "touch",
@@ -61,29 +135,40 @@ def osc_copy(text) -> None:
     sys.stderr.flush()
 
 
-def _run_shell(cmd):
+def _run_shell(cmd, sandbox=False):
+    argv = [_SHELL, "-c", cmd]
+    if sandbox:
+        argv = _wrap_sandbox(argv)
     p = subprocess.run(
-        [_SHELL, "-c", cmd],
+        argv,
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
     )
     return p.returncode, p.stdout.decode("utf-8", errors="replace")
 
 
-def sh(cmd):
-    """执行 shell 命令, 返回 stdout+stderr 文本 (不写剪贴板)."""
-    return _run_shell(cmd)[1]
+def sh(cmd, sandbox=False):
+    """执行 shell 命令, 返回 stdout+stderr 文本 (不写剪贴板).
+
+    sandbox=True 时在只读沙箱里执行 (Linux: bwrap, macOS: sandbox-exec).
+    """
+    return _run_shell(cmd, sandbox=sandbox)[1]
 
 
-def run(cmd):
+def run(cmd, sandbox=False):
     """执行 shell 命令, 把 stdout+stderr 通过 OSC 52 复制到剪贴板.
+
+    sandbox=True 时在只读沙箱里执行:
+      - Linux: bwrap (bubblewrap), 根文件系统 --ro-bind / / 只读
+      - macOS: sandbox-exec + seatbelt, deny file-write*
 
     复制内容用 <paste>...</paste> 包裹, 与 fish 版 amd 的约定一致.
     返回 (returncode, text).
     """
-    rc, text = _run_shell(cmd)
+    rc, text = _run_shell(cmd, sandbox=sandbox)
     osc_copy("<paste>\n%s\n</paste>" % text)
-    print("[amd] returncode=%d, copied %d bytes to clipboard" % (rc, len(text)))
+    print("[amd] returncode=%d, copied %d bytes to clipboard (%s)"
+          % (rc, len(text), "sandbox" if sandbox else "direct"))
     return rc, text
 
 # ---------------------------------------------------------------------------
@@ -249,7 +334,9 @@ def _bootstrap():
         return
     osc_copy(text)
     print("[amd] Python REPL ready. 提示词已复制到剪贴板.")
-    print("[amd] agent 用:  run(cmd)  sh(cmd)  osc_copy(text)")
+    print("[amd] platform=%s | sandbox=%s" % (sys.platform, sandbox_kind()))
+    print("[amd] agent 用:  run(cmd, sandbox=False)  sh(cmd, sandbox=False)"
+          "  osc_copy(text)  sandbox_available()")
     print("[amd] 用户用:    ls(*a)  cat(*f)  cd(path)  pwd()  grep(*a)"
           "  find(*a)  which(c)  head/tail/wc(*a)  tree(*a)  term(cmd)")
 
