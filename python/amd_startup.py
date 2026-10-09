@@ -25,7 +25,10 @@ _HERE = Path(__file__).resolve().parent if "__file__" in globals() \
 
 _PROMPT_FILE = _HERE / "amd_prompt.txt"
 _SKILLS_DIR = Path.home() / ".dsh" / "skills"
-_SHELL = os.environ.get("SHELL") or "/bin/sh"
+# 默认用 bash 执行 run/sh; 找不到时回退到 $SHELL, 再回退 /bin/sh.
+# 注意: fish 语法与 POSIX 不兼容, 所以不直接用 $SHELL.
+_BASH = shutil.which("bash") or ("/bin/bash" if os.path.exists("/bin/bash") else None)
+_SHELL = _BASH or os.environ.get("SHELL") or "/bin/sh"
 
 # ---------------------------------------------------------------------------
 # 平台检测 & 只读沙箱
@@ -47,6 +50,11 @@ _SEATBELT_RO_PROFILE = """(version 1)
     (subpath "/private/var/tmp")
     (subpath "/private/var/folders"))
 """
+
+
+def current_shell():
+    """返回 run/sh 默认使用的 shell 路径."""
+    return _SHELL
 
 
 def sandbox_available():
@@ -102,7 +110,7 @@ def _wrap_sandbox(argv):
 __all__ = [
     # agent 用
     "run", "sh", "osc_copy", "build_prompt",
-    "sandbox_available", "sandbox_kind",
+    "sandbox_available", "sandbox_kind", "current_shell",
     # 用户用
     "term", "ls", "cd", "pwd", "cat", "grep", "find", "which",
     "head", "tail", "wc", "tree", "echo", "mkdir", "touch",
@@ -135,8 +143,9 @@ def osc_copy(text) -> None:
     sys.stderr.flush()
 
 
-def _run_shell(cmd, sandbox=False):
-    argv = [_SHELL, "-c", cmd]
+def _run_shell(cmd, sandbox=False, shell=None):
+    exe = shell or _SHELL
+    argv = [exe, "-c", cmd]
     if sandbox:
         argv = _wrap_sandbox(argv)
     p = subprocess.run(
@@ -147,16 +156,19 @@ def _run_shell(cmd, sandbox=False):
     return p.returncode, p.stdout.decode("utf-8", errors="replace")
 
 
-def sh(cmd, sandbox=False):
+def sh(cmd, sandbox=False, shell=None):
     """执行 shell 命令, 返回 stdout+stderr 文本 (不写剪贴板).
 
+    默认用 bash 执行; shell="fish" 等可覆盖.
     sandbox=True 时在只读沙箱里执行 (Linux: bwrap, macOS: sandbox-exec).
     """
-    return _run_shell(cmd, sandbox=sandbox)[1]
+    return _run_shell(cmd, sandbox=sandbox, shell=shell)[1]
 
 
-def run(cmd, sandbox=False):
+def run(cmd, sandbox=False, shell=None):
     """执行 shell 命令, 把 stdout+stderr 通过 OSC 52 复制到剪贴板.
+
+    默认用 bash 执行 (不与 fish 语法兼容), shell= 可覆盖.
 
     sandbox=True 时在只读沙箱里执行:
       - Linux: bwrap (bubblewrap), 根文件系统 --ro-bind / / 只读
@@ -165,7 +177,7 @@ def run(cmd, sandbox=False):
     复制内容用 <paste>...</paste> 包裹, 与 fish 版 amd 的约定一致.
     返回 (returncode, text).
     """
-    rc, text = _run_shell(cmd, sandbox=sandbox)
+    rc, text = _run_shell(cmd, sandbox=sandbox, shell=shell)
     osc_copy("<paste>\n%s\n</paste>" % text)
     print("[amd] returncode=%d, copied %d bytes to clipboard (%s)"
           % (rc, len(text), "sandbox" if sandbox else "direct"))
@@ -334,7 +346,8 @@ def _bootstrap():
         return
     osc_copy(text)
     print("[amd] Python REPL ready. 提示词已复制到剪贴板.")
-    print("[amd] platform=%s | sandbox=%s" % (sys.platform, sandbox_kind()))
+    print("[amd] platform=%s | sandbox=%s | shell=%s"
+          % (sys.platform, sandbox_kind(), _SHELL))
     print("[amd] agent 用:  run(cmd, sandbox=False)  sh(cmd, sandbox=False)"
           "  osc_copy(text)  sandbox_available()")
     print("[amd] 用户用:    ls(*a)  cat(*f)  cd(path)  pwd()  grep(*a)"
