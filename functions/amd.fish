@@ -1,9 +1,11 @@
-# ~/.config/fish/functions/ama.fish
+# ~/.config/fish/functions/amd.fish
 function amd --description '生成设备探索 agent 提示词并复制到系统剪贴板'
     set -l cwd (pwd)
 
     set -l prompt \
         '你是一个可以操作当前设备的 agent.' \
+        '' \
+        "当前工作目录: $cwd" \
         '' \
         '# 如何获取命令输出' \
         '' \
@@ -33,14 +35,12 @@ function amd --description '生成设备探索 agent 提示词并复制到系统
         '' \
         '# 任务' \
         '' \
-        "当前工作目录: $cwd" \
         '利用上述方式探索当前设备中的内容, 定位并解决问题.'
 
-    set -l text (string join "\n" $prompt)
+    set -l text (printf '%s\n' $prompt | string collect)
 
-    # 把提示词本身也通过 OSC 52 复制到系统剪贴板
     set -l payload (printf '%s' "$text" | base64 | tr -d '\n\r')
     printf '\e]52;c;%s\a' $payload > /dev/tty
 
-    echo "Agent 提示词已复制到剪贴板 (cwd: $cwd)"
+    echo "agent 提示词已复制到剪贴板 (cwd: $cwd)"
 end
