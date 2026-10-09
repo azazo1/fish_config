@@ -10,10 +10,7 @@ alias configd "cd $__fish_config_dir"
 alias kittyconfig 'nvim ~/.config/kitty/kitty.conf'
 alias sshconfig 'nvim ~/.ssh/config'
 alias ad 'nvim ~/.dsh/AGENTS.md'
-alias agents 'nvim ~/.codex/AGENTS.md'
-alias agnets 'nvim ~/.codex/AGENTS.md'
-alias agent 'nvim ~/.codex/AGENTS.md'
-alias agnet 'nvim ~/.codex/AGENTS.md'
+alias ac 'nvim ~/.codex/AGENTS.md'
 # }
 
 # lazygit {
