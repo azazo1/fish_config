@@ -35,9 +35,12 @@ function amd --description '生成设备探索 agent 提示词并复制到系统
         '' \
         '# 任务' \
         '' \
-        '利用上述方式探索当前设备中的内容, 定位并解决问题.'
+        '利用上述方式探索当前设备中的内容, 定位并解决问题.' \
+        '' \
+        '# 用户要求' \
+        ''
 
-    set -l text (printf '%s\n' $prompt | string collect)
+    set -l text (printf '%s\n' $prompt | string collect -N)
 
     set -l payload (printf '%s' "$text" | base64 | tr -d '\n\r')
     printf '\e]52;c;%s\a' $payload > /dev/tty
