@@ -143,7 +143,7 @@ def osc_copy(text) -> None:
     sys.stderr.flush()
 
 
-def _run_shell(cmd, sandbox=False, shell=None):
+def _run_shell(cmd, sandbox=True, shell=None):
     exe = shell or _SHELL
     argv = [exe, "-c", cmd]
     if sandbox:
@@ -156,7 +156,7 @@ def _run_shell(cmd, sandbox=False, shell=None):
     return p.returncode, p.stdout.decode("utf-8", errors="replace")
 
 
-def sh(cmd, sandbox=False, shell=None):
+def sh(cmd, sandbox=True, shell=None):
     """执行 shell 命令, 返回 stdout+stderr 文本 (不写剪贴板).
 
     默认用 bash 执行; shell= 可覆盖解释器.
@@ -165,7 +165,7 @@ def sh(cmd, sandbox=False, shell=None):
     return _run_shell(cmd, sandbox=sandbox, shell=shell)[1]
 
 
-def run(cmd, sandbox=False, shell=None):
+def run(cmd, sandbox=True, shell=None):
     """执行 shell 命令, 把 stdout+stderr 通过 OSC 52 复制到剪贴板.
 
     默认用 bash 执行, shell= 可覆盖解释器.
@@ -348,7 +348,7 @@ def _bootstrap():
     print("[amd] Python REPL ready. 提示词已复制到剪贴板.")
     print("[amd] platform=%s | sandbox=%s | shell=%s"
           % (sys.platform, sandbox_kind(), _SHELL))
-    print("[amd] agent 用:  run(cmd, sandbox=False)  sh(cmd, sandbox=False)"
+    print("[amd] agent 用:  run(cmd, sandbox=True, shell=None)  sh(cmd, sandbox=True, shell=None)"
           "  osc_copy(text)  sandbox_available()")
     print("[amd] 用户用:    ls(*a)  cat(*f)  cd(path)  pwd()  grep(*a)"
           "  find(*a)  which(c)  head/tail/wc(*a)  tree(*a)  term(cmd)")
