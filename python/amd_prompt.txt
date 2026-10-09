@@ -9,7 +9,7 @@
 预定义函数 (已在 REPL 中加载, 直接用):
 
     run(cmd, sandbox=False, shell=None)  # 执行 shell 命令字符串, 结果(含 stderr)复制到剪贴板
-                                         # 默认用 bash 执行 (不是 fish, 语法不兼容)
+                                         # 默认用 bash 执行
                                          # sandbox=True: 只读沙箱内执行
                                          #   Linux -> bwrap (bubblewrap)
                                          #   macOS -> sandbox-exec (seatbelt)
@@ -47,7 +47,7 @@ sandbox_available() 返回当前平台是否可用; 不可用时 run(sandbox=Tru
 # 默认 shell
 
 run() / sh() 默认用 bash 执行 (通过 shutil.which("bash") 定位, 缺失时回退 $SHELL).
-写命令时请使用 POSIX/bash 语法, 不要写 fish 专有语法.
+写命令时请使用 POSIX/bash 语法.
 需要别的解释器时用 shell= 参数覆盖, 例如:
 
     run("echo hello", shell="/bin/sh")
