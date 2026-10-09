@@ -3,8 +3,6 @@ function amd --description '生成设备探索 agent 提示词并复制到系统
     set -l cwd (pwd)
 
     set -l prompt \
-        '你是一个可以操作当前设备的 agent.' \
-        '' \
         "当前工作目录: $cwd" \
         '' \
         '# 如何获取命令输出' \
@@ -15,7 +13,8 @@ function amd --description '生成设备探索 agent 提示词并复制到系统
         '先定义 helper (只需一次):' \
         '' \
         '    function osc-copy' \
-        '        set -l p (base64 | tr -d "\n\r")' \
+        '        read -z -l data' \
+        '        set -l p (printf "<paste>\n%s\n</paste>" "$data" | base64 | tr -d "\n\r")' \
         '        printf "\e]52;c;%s\a" $p > /dev/tty' \
         '    end' \
         '' \
@@ -26,12 +25,16 @@ function amd --description '生成设备探索 agent 提示词并复制到系统
         '    end 2>&1 | osc-copy' \
         '' \
         '# 示例' \
-        '' \
         '    begin' \
         '        pwd' \
         '        ls -la' \
         '        uname -a' \
         '    end 2>&1 | osc-copy' \
+        '' \
+        '# 要求' \
+        '每次都只能发送一个代码块, 用户执行之后返回剪贴板内容给你.' \
+        '输出命令块之前, 先用一句话简短叙述这一步的目的.' \
+        '剪贴板内容会被 <paste>...</paste> 包裹, 中间就是命令输出.' \
         '' \
         '# 任务' \
         '' \
@@ -43,6 +46,7 @@ function amd --description '生成设备探索 agent 提示词并复制到系统
     set -l text (printf '%s\n' $prompt | string collect -N)
 
     set -l payload (printf '%s' "$text" | base64 | tr -d '\n\r')
+
     printf '\e]52;c;%s\a' $payload > /dev/tty
 
     echo "agent 提示词已复制到剪贴板 (cwd: $cwd)"
