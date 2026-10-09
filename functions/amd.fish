@@ -2,6 +2,13 @@
 function amd --description '生成设备探索 agent 提示词并复制到系统剪贴板'
     set -l cwd (pwd)
 
+    function osc-copy --description '把 stdin 通过 OSC 52 复制到剪贴板'
+        read -z -l data
+        set -l data (string trim -r -c "\n" -- $data)
+        set -l p (printf "<paste>\n%s\n</paste>" "$data" | base64 | tr -d "\n\r")
+        printf "\e]52;c;%s\a" $p > /dev/tty
+    end
+
     set -l prompt \
         "当前工作目录: $cwd" \
         '' \
@@ -10,13 +17,8 @@ function amd --description '生成设备探索 agent 提示词并复制到系统
         '你的 stdout 无法被直接读取. 要读取命令输出, 请用 OSC 52' \
         '转义序列把它复制到系统剪贴板, 然后从剪贴板读取.' \
         '' \
-        '先定义 helper (只需一次):' \
+        'osc-copy 已经定义好, 直接用:' \
         '' \
-        '    function osc-copy' \
-        '        read -z -l data' \
-        '        set -l p (printf "<paste>%s</paste>" "$data" | base64 | tr -d "\n\r")' \
-        '        printf "\e]52;c;%s\a" $p > /dev/tty' \
-        '    end' \
         '' \
         '之后所有需要读取输出的命令都写成:' \
         '' \
