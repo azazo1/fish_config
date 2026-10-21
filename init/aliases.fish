@@ -57,6 +57,7 @@ end
 alias g git
 alias j just
 alias jr 'just run'
+alias jb 'just build'
 alias kg cargo
 alias kgr 'cargo run --'
 alias uvpy 'uv run python'
