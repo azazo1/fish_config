@@ -65,6 +65,7 @@ alias activate '. ./.venv/bin/activate.fish'
 alias cc claude
 alias ht 'howlto --'
 alias dsho dsh-open
+alias mnp '/Applications/wechatwebdevtools.app/Contents/MacOS/cli'
 # }
 
 # 其他 {
